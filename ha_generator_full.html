@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>HA Space Weather Config Generator FULL</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 20px; color: #333; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        h1 { color: #0288d1; border-bottom: 3px solid #0288d1; padding-bottom: 15px; text-align: center; }
+        .controls { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 1px solid #e0e0e0; }
+        label { font-weight: bold; display: block; margin-bottom: 10px; color: #0277bd; }
+        select { width: 100%; padding: 15px; font-size: 16px; border-radius: 8px; border: 2px solid #0288d1; outline: none; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .box { position: relative; }
+        h3 { margin-bottom: 10px; color: #444; font-size: 16px; display: flex; justify-content: space-between; }
+        textarea { width: 100%; height: 350px; font-family: 'Consolas', 'Monaco', monospace; font-size: 12px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #282c34; color: #abb2bf; line-height: 1.5; box-sizing: border-box; }
+        #html_file, #readme, #prompt { height: 250px; } /* Делаем эти окна поменьше для удобства */
+        .btn-copy { background: #0288d1; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+        .btn-copy:hover { background: #01579b; }
+        .footer-btns { margin-top: 30px; display: flex; gap: 15px; }
+        .btn-dl { flex: 1; padding: 15px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; color: white; transition: 0.3s; font-weight: bold; }
+        .btn-dl-txt { background: #4caf50; }
+        .btn-dl-txt:hover { background: #388e3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Генератор конфигурации Space Weather</h1>
+    
+    <div class="controls">
+        <label for="citySelect">Выберите город для адаптации кода:</label>
+        <select id="citySelect" onchange="updateConfigs()">
+            <option value="QYPM" data-alias="abakan">Абакан</option>
+            <option value="SSWT" data-alias="anadyr">Анадырь</option>
+            <option value="SRLE" data-alias="arkhangelsk">Архангельск</option>
+            <option value="PQM0" data-alias="astrakhan">Астрахань</option>
+            <option value="QWOZ" data-alias="barnaul">Барнаул</option>
+            <option value="QGL2" data-alias="belgorod">Белгород</option>
+            <option value="Q5T3" data-alias="birobidzhan">Биробиджан</option>
+            <option value="QESN" data-alias="blagoveshchensk">Благовещенск</option>
+            <option value="B9DU" data-alias="bratsk">Братск</option>
+            <option value="QWKV" data-alias="bryansk">Брянск</option>
+            <option value="P7T0" data-alias="vladivostok">Владивосток</option>
+            <option value="P6LQ" data-alias="vladikavkaz">Владикавказ</option>
+            <option value="RDLD" data-alias="vladimir">Владимир</option>
+            <option value="Q4LP" data-alias="volgograd">Волгоград</option>
+            <option value="RVLC" data-alias="vologda">Вологда</option>
+            <option value="VG5T" data-alias="vorkuta">Воркута</option>
+            <option value="QMLA" data-alias="voronezh">Воронеж</option>
+            <option value="QOP6" data-alias="gorno-altaysk">Горно-Алтайск</option>
+            <option value="P8LT" data-alias="grozny">Грозный</option>
+            <option value="RHN2" data-alias="yekaterinburg">Екатеринбург</option>
+            <option value="RILF" data-alias="ivanovo">Иваново</option>
+            <option value="RHMG" data-alias="izhevsk">Ижевск</option>
+            <option value="QQQP" data-alias="irkutsk">Иркутск</option>
+            <option value="RGM0" data-alias="yoshkar-ola">Йошкар-Ола</option>
+            <option value="RBM3" data-alias="kazan">Казань</option>
+            <option value="R4JQ" data-alias="kaliningrad">Калининград</option>
+            <option value="R3L1" data-alias="kaluga">Калуга</option>
+            <option value="R8P6" data-alias="kemerovo">Кемерово</option>
+            <option value="RSM5" data-alias="kirov">Киров</option>
+            <option value="PUKF" data-alias="chisinau">Кишинёв</option>
+            <option value="KT8D" data-alias="komsomolsk_on_amur">Комсомольск-на-Амуре</option>
+            <option value="RNLF" data-alias="kostroma">Кострома</option>
+            <option value="PIL9" data-alias="krasnodar">Краснодар</option>
+            <option value="RCPR" data-alias="krasnoyarsk">Красноярск</option>
+            <option value="R9NG" data-alias="kurgan">Курган</option>
+            <option value="QML1" data-alias="kursk">Курск</option>
+            <option value="QMPV" data-alias="kyzyl">Кызыл</option>
+            <option value="L9JF" data-alias="lensk">Ленск</option>
+            <option value="QSLB" data-alias="lipetsk">Липецк</option>
+            <option value="RXUK" data-alias="magadan">Магадан</option>
+            <option value="PGLC" data-alias="maikop">Майкоп</option>
+            <option value="P6LY" data-alias="makhachkala">Махачкала</option>
+            <option value="BEST" data-alias="meshchovsk">Мещовск</option>
+            <option value="PDLL" data-alias="mineralnye_vody">Минеральные Воды</option>
+            <option value="MH8W" data-alias="mirny_saha">Мирный (Якутия)</option>
+            <option value="RAL5" data-alias="moscow" selected>Москва</option>
+            <option value="TIKR" data-alias="murmansk">Мурманск</option>
+            <option value="RAMD" data-alias="naberezhnye_chelny">Набережные Челны</option>
+            <option value="P7LQ" data-alias="nazran">Назрань</option>
+            <option value="P9LN" data-alias="nalchik">Нальчик</option>
+            <option value="NM03" data-alias="naryan_mar">Нарьян-Мар</option>
+            <option value="NA8H" data-alias="neryungri">Нерюнгри</option>
+            <option value="NE9H" data-alias="nizhnevartovsk">Нижневартовск</option>
+            <option value="RELO" data-alias="nizhny_novgorod">Нижний Новгород</option>
+            <option value="RRKM" data-alias="novgorod">Новгород</option>
+            <option value="NG7S" data-alias="novokuznetsk">Новокузнецк</option>
+            <option value="R6OX" data-alias="novosibirsk">Новосибирск</option>
+            <option value="NG4L" data-alias="novy_urengoy">Новый Уренгой</option>
+            <option value="NJ7D" data-alias="norilsk">Норильск</option>
+            <option value="R6O4" data-alias="omsk">Омск</option>
+            <option value="QNML" data-alias="orenburg">Оренбург</option>
+            <option value="QUL0" data-alias="oryol">Орёл</option>
+            <option value="QVLR" data-alias="penza">Пенза</option>
+            <option value="ROMP" data-alias="perm">Пермь</option>
+            <option value="SBKV" data-alias="petrozavodsk">Петрозаводск</option>
+            <option value="QUV8" data-alias="petropavlovsk-kamchatsky">Петропавловск-Камчатский</option>
+            <option value="RNKD" data-alias="pskov">Псков</option>
+            <option value="PVLB" data-alias="rostov_on_don">Ростов-на-Дону</option>
+            <option value="R4LB" data-alias="ryazan">Рязань</option>
+            <option value="T3NK" data-alias="salekhard">Салехард</option>
+            <option value="QVM6" data-alias="samara">Самара</option>
+            <option value="S0KJ" data-alias="saint_petersburg">Санкт-Петербург</option>
+            <option value="R1LS" data-alias="saransk">Саранск</option>
+            <option value="QLLU" data-alias="saratov">Саратов</option>
+            <option value="S8FW" data-alias="sevastopol">Севастополь</option>
+            <option value="PIKU" data-alias="simferopol">Симферополь</option>
+            <option value="R5KO" data-alias="smolensk">Смоленск</option>
+            <option value="PALB" data-alias="sochi">Сочи</option>
+            <option value="PILI" data-alias="stavropol">Ставрополь</option>
+            <option value="53QX" data-alias="station_vostok">Станция Восток</option>
+            <option value="73PR" data-alias="station_mirny">Станция Мирный</option>
+            <option value="SJ2L" data-alias="surgut">Сургут</option>
+            <option value="SAM8" data-alias="syktyvkar">Сыктывкар</option>
+            <option value="QSLG" data-alias="tambov">Тамбов</option>
+            <option value="REL0" data-alias="tver">Тверь</option>
+            <option value="TH8S" data-alias="tiksi">Тикси</option>
+            <option value="QXM4" data-alias="tolyatti">Тольятти</option>
+            <option value="RFP3" data-alias="tomsk">Томск</option>
+            <option value="R1L5" data-alias="tula">Тула</option>
+            <option value="RJNH" data-alias="tyumen">Тюмень</option>
+            <option value="QNQZ" data-alias="ulan-ude">Улан-Удэ</option>
+            <option value="R2M1" data-alias="ulyanovsk">Ульяновск</option>
+            <option value="R4MO" data-alias="ufa">Уфа</option>
+            <option value="Q3T9" data-alias="khabarovsk">Хабаровск</option>
+            <option value="S6NR" data-alias="khanty-mansiysk">Ханты-Мансийск</option>
+            <option value="RDLY" data-alias="cheboksary">Чебоксары</option>
+            <option value="R7N4" data-alias="chelyabinsk">Челябинск</option>
+            <option value="RVL6" data-alias="cherepovets">Череповец</option>
+            <option value="PDLI" data-alias="cherkessk">Черкесск</option>
+            <option value="QORH" data-alias="chita">Чита</option>
+            <option value="PQLP" data-alias="elista">Элиста</option>
+            <option value="PUTW" data-alias="yuzhno-sakhalinsk">Южно-Сахалинск</option>
+            <option value="SCST" data-alias="yakutsk">Якутск</option>
+            <option value="RMLC" data-alias="yaroslavl">Ярославль</option>
+        </select>
+    </div>
+
+    <div class="grid">
+        <div class="box">
+            <h3>1. aurora_sensors.yaml <button class="btn-copy" onclick="copyText('yaml')">Копировать</button></h3>
+            <textarea id="yaml" readonly></textarea>
+        </div>
+        <div class="box">
+            <h3>2. dashboard_card.yaml <button class="btn-copy" onclick="copyText('card')">Копировать</button></h3>
+            <textarea id="card" readonly></textarea>
+        </div>
+        <div class="box">
+            <h3>3. yandex_script.yaml <button class="btn-copy" onclick="copyText('script')">Копировать</button></h3>
+            <textarea id="script" readonly></textarea>
+        </div>
+        <div class="box">
+            <h3>4. aurora.html (В папку www) <button class="btn-copy" onclick="copyText('html_file')">Копировать</button></h3>
+            <textarea id="html_file" readonly></textarea>
+        </div>
+        <div class="box">
+            <h3>5. Инструкция / Документация (README) <button class="btn-copy" onclick="copyText('readme')">Копировать</button></h3>
+            <textarea id="readme" readonly></textarea>
+        </div>
+        <div class="box">
+            <h3>6. Промт для ИИ-помощника (System Prompt) <button class="btn-copy" onclick="copyText('prompt')">Копировать</button></h3>
+            <textarea id="prompt" readonly></textarea>
+        </div>
+    </div>
+
+    <div class="footer-btns">
+        <button class="btn-dl btn-dl-txt" onclick="downloadAll()">Скачать сводный файл .txt (Все 6 блоков)</button>
+    </div>
+</div>
+
+<script>
+function updateConfigs() {
+    const s = document.getElementById('citySelect');
+    const id = s.value;
+    const alias = s.options[s.selectedIndex].getAttribute('data-alias');
+    const name = s.options[s.selectedIndex].text;
+
+    const sensors = `scrape:
+  # 1. Вероятность сияний
+  - resource: "https://xras.ru/aurora.html/${alias}/"
+    scan_interval: 1800
+    sensor:
+      - name: "Aurora Probability Local"
+        select: ".aurora_location:has(span.aurora_location_name:contains('${name}')) span.aurora_location_value"
+        value_template: "{{ value | replace(' %', '') }}"
+        unit_of_measurement: "%"
+        icon: "mdi:weather-aurora"
+
+  # 2. Текстовые сводки о вспышках на Солнце
+  - resource: "https://xras.ru/sun_flares.html"
+    scan_interval: 1800
+    sensor:
+      - name: "Solar Flare Current Status"
+        select: ".graph_lastdata_text"
+        index: 0
+        icon: "mdi:white-balance-sunny"
+        value_template: "{{ value | trim }}"
+      - name: "Solar Flare Last Info"
+        select: ".graph_lastdata_text"
+        index: 1
+        icon: "mdi:information-outline"
+        value_template: "{{ value | trim }}"
+
+sensor:
+  # 3. Существующий датчик индекса сияний
+  - platform: rest
+    name: "Aurora Index Latest"
+    resource: "https://xras.ru/txt/ai_${id}.json"
+    scan_interval: 300
+    value_template: "{{ value_json.data[0].ai }}"
+    unit_of_measurement: "AI"
+    json_attributes_path: "$.data[0]"
+    json_attributes:
+      - time
+
+  # 4. Датчик сырых значений вспышек
+  - platform: rest
+    name: "Solar X-Ray Latest"
+    resource: "https://xras.ru/txt/xray_${id}.json" 
+    scan_interval: 60
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    value_template: >
+      {% if value_json is defined and value_json.data is defined %}
+        {{ value_json.data[0].long }}
+      {% else %}
+        unknown
+      {% endif %}
+    unit_of_measurement: "W/m²"
+    icon: "mdi:white-balance-sunny"
+    json_attributes_path: "$.data[0]"
+    json_attributes:
+      - time
+
+  # 5. ПРОГНОЗ НА 3 ДНЯ (Берем данные на СЕГОДНЯ - индекс 2)
+  - platform: rest
+    name: "Kp Forecast Today"
+    resource: "https://xras.ru/txt/kpf_${id}.json"
+    scan_interval: 3600
+    value_template: "{{ value_json.data[2].max_kp }}"
+    unit_of_measurement: "Kp"
+    icon: "mdi:magnet"
+
+  # 6. Прогноз F10 на сегодня  
+  - platform: rest
+    name: "F10 Forecast Today"
+    resource: "https://xras.ru/txt/kpf_${id}.json"
+    scan_interval: 3600
+    value_template: "{{ value_json.data[2].f10 }}"
+    unit_of_measurement: "sfu"
+    icon: "mdi:sun-wireless"
+
+  # 7. ПРОГНОЗ НА 3 ДНЯ (Берем данные на ЗАВТРА - индекс 1)
+  - platform: rest
+    name: "Kp Forecast Tomorrow"
+    resource: "https://xras.ru/txt/kpf_${id}.json"
+    scan_interval: 3600
+    value_template: "{{ value_json.data[1].max_kp }}"
+    unit_of_measurement: "Kp"
+    icon: "mdi:magnet-on"
+
+  # 8. Текущий индекс Kp (Магнитные бури - Сейчас)
+  - platform: rest
+    name: "Kp Current"
+    resource: "https://xras.ru/txt/kp_${id}.json"
+    scan_interval: 1800
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    value_template: >-
+      {% if value_json is defined and value_json.data is defined %}
+        {% set today_data = value_json.data[2] %}
+        {% set msk_time = as_timestamp(now()) + (3 * 3600) %}
+        {% set msk_hour = (msk_time | timestamp_custom('%H', false)) | int %}
+        {% if msk_hour < 3 %}{{ today_data.h00 }}{% elif msk_hour < 6 %}{{ today_data.h03 }}{% elif msk_hour < 9 %}{{ today_data.h06 }}{% elif msk_hour < 12 %}{{ today_data.h09 }}{% elif msk_hour < 15 %}{{ today_data.h12 }}{% elif msk_hour < 18 %}{{ today_data.h15 }}{% elif msk_hour < 21 %}{{ today_data.h18 }}{% else %}{{ today_data.h21 }}{% endif %}
+      {% else %} unknown {% endif %}
+    unit_of_measurement: "Kp"
+    icon: "mdi:magnet"`;
+
+    const card = `type: vertical-stack
+cards:
+  - type: iframe
+    url: /local/aurora.html?autoplay=1&muted=1
+    aspect_ratio: 50%
+  - type: picture
+    title: Нажмите для истории индекса активности
+    image: https://xras.ru/image/iaur.e.png
+    entity: sensor.aurora_index_latest
+    tap_action:
+      action: more-info
+    hold_action:
+      action: none
+  - type: picture
+    title: Прогноз магнитных бурь на 3 суток
+    image: https://xras.ru/image/kpf_${id}.png
+    tap_action:
+      action: url
+      url_path: https://xras.ru/forecast_activity.html/${alias}/
+    hold_action:
+      action: none
+  - type: markdown
+    content: >
+      {% set kp_t = states('sensor.kp_forecast_today') | float(0) %}
+      {% set g_t = 'G5 (Экстремальная буря)' if kp_t >= 9 else 'G4 (Очень сильная буря)' if kp_t >= 8 else 'G3 (Сильная буря)' if kp_t >= 7 else 'G2 (Умеренная буря)' if kp_t >= 6 else 'G1 (Слабая буря)' if kp_t >= 5 else 'Норма (Без бурь)' %}
+
+      {% set kp_tm = states('sensor.kp_forecast_tomorrow') | float(0) %}
+      {% set g_tm = 'G5 (Экстремальная буря)' if kp_tm >= 9 else 'G4 (Очень сильная буря)' if kp_tm >= 8 else 'G3 (Сильная буря)' if kp_tm >= 7 else 'G2 (Умеренная буря)' if kp_tm >= 6 else 'G1 (Слабая буря)' if kp_tm >= 5 else 'Норма (Без бурь)' %}
+
+      {% set kp_now_state = states('sensor.kp_current') %}
+      {% if kp_now_state not in ['unknown', 'unavailable'] %}
+        {% set kp_now = kp_now_state | float(0) %}
+        {% set g_now = 'G5 (Экстремальная буря)' if kp_now >= 9 else 'G4 (Очень сильная буря)' if kp_now >= 8 else 'G3 (Сильная буря)' if kp_now >= 7 else 'G2 (Умеренная буря)' if kp_now >= 6 else 'G1 (Слабая буря)' if kp_now >= 5 else 'Норма (Без бурь)' %}
+      {% endif %}
+
+      <div style="font-size: 16px; line-height: 1.4;"> 
+
+      <h3 style="margin-top: 0; margin-bottom: 4px; font-size: 18px;">🌌 Полярные сияния</h3>
+
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <ha-icon icon="mdi:chart-bell-curve-cumulative" style="margin-right: 8px;"></ha-icon> 
+      <span>Индекс активности: <b>{{ states('sensor.aurora_index_latest') }} AI</b> <span style="color:var(--secondary-text-color); font-size: 0.85em;">(на {{ state_attr('sensor.aurora_index_latest', 'time')[11:19] }})</span></span>
+      </div>
+
+      <div style="display: flex; align-items: center; margin-bottom: 12px;">
+      <ha-icon icon="mdi:weather-aurora" style="margin-right: 8px;"></ha-icon>
+      <a href="https://xras.ru/aurora.html/${alias}/" target="_blank" style="color: var(--primary-color); text-decoration: none;">Вероятность в г. ${name}: <b>{{ states('sensor.aurora_probability_local') }}%</b> <span style="font-size: 0.85em;">(прогноз ↗)</span></a> 
+      </div>
+
+      <hr style="border-color: var(--divider-color); margin-top: 0; margin-bottom: 12px;">
+
+      <h3 style="margin-top: 0; margin-bottom: 4px; font-size: 18px;">🧲 Магнитные бури</h3>
+
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <ha-icon icon="mdi:magnet" style="margin-right: 8px; color: var(--primary-color);"></ha-icon> 
+      {% if kp_now_state not in ['unknown', 'unavailable'] %}
+        <span style="font-size: 1.1em;">Сейчас: <b>{{ kp_now }} Kp</b> ({{ g_now }})</span>
+      {% else %}
+        <span style="font-size: 1.1em; color: var(--secondary-text-color);">Сейчас: <b>Обновление данных...</b></span>
+      {% endif %}
+      </div>
+
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <ha-icon icon="mdi:chevron-up" style="margin-right: 8px; color: var(--secondary-text-color);"></ha-icon> 
+      <span style="color: var(--secondary-text-color);">Максимум за сегодня: <b>{{ states('sensor.kp_forecast_today') }} Kp</b> ({{ g_t }})</span> 
+      </div>
+
+      <div style="display: flex; align-items: center; margin-bottom: 12px;">
+      <ha-icon icon="mdi:calendar-arrow-right" style="margin-right: 8px; color: var(--secondary-text-color);"></ha-icon> 
+      <span style="color: var(--secondary-text-color);">Ожидается завтра: <b>{{ states('sensor.kp_forecast_tomorrow') }} Kp</b> ({{ g_tm }})</span> 
+      </div>
+
+      <hr style="border-color: var(--divider-color); margin-top: 0; margin-bottom: 12px;">
+
+      <h3 style="margin-top: 0; margin-bottom: 4px; font-size: 18px;">☀️ Солнечная активность</h3>
+
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <ha-icon icon="mdi:sun-wireless" style="margin-right: 8px;"></ha-icon> 
+      <span>Индекс излучения (F10.7): <b>{{ states('sensor.f10_forecast_today') }}</b></span> 
+      </div>
+      
+      <div style="display: flex; align-items: center; margin-bottom: 4px;">
+      <ha-icon icon="mdi:white-balance-sunny" style="margin-right: 8px;"></ha-icon> 
+      <span>Статус: <b>{{ states('sensor.solar_flare_current_status') }}</b></span> 
+      </div>
+
+      <div style="display: flex; align-items: flex-start;"> 
+      <ha-icon icon="mdi:information-outline" style="margin-right: 8px; margin-top: 2px; color: var(--secondary-text-color);"></ha-icon> 
+      <span style="color: var(--secondary-text-color); font-size: 0.95em;">{{ states('sensor.solar_flare_last_info') }}</span> 
+      </div> 
+      </div>`;
+
+    const script = `alias: "Утренняя сводка: Космическая погода"
+icon: mdi:weather-space
+sequence:
+  - action: tts.yandex_station_say
+    data:
+      entity_id: media_player.yandex_station_c00m4600042gwr
+      cache: false
+      options:
+        volume_level: 0.4
+      message: >-
+        {% set kp_now = states('sensor.kp_current') | float(0) %} 
+        {% set kp_today = states('sensor.kp_forecast_today') | float(0) %}
+
+        {% set g_now = 'экстремальная буря' if kp_now >= 9 else 'очень сильная буря' if kp_now >= 8 else 'сильная буря' if kp_now >= 7 else 'умеренная буря' if kp_now >= 6 else 'слабая буря' if kp_now >= 5 else 'магнитосфера спокойна' %} 
+        
+        {% set g_today = 'с экстремальными бурями' if kp_today >= 9 else 'с очень сильными бурями' if kp_today >= 8 else 'с сильными бурями' if kp_today >= 7 else 'с умеренными бурями' if kp_today >= 6 else 'со слабыми бурями' if kp_today >= 5 else 'без магнитных бурь' %}
+
+        Доброе утро! Краткая сводка космической погоды для города ${name}.
+        Прямо сейчас {{ g_now }}, текущий индекс {{ kp_now }}. 
+        Максимальный ожидаемый уровень за сегодня — {{ kp_today }}, день пройдет {{ g_today }}.
+        Солнечная активность: {{ states('sensor.solar_flare_current_status') | lower }}. 
+        Вероятность полярного сияния сейчас составляет {{ states('sensor.aurora_probability_local') }} процентов.
+        Отличного вам дня!`;
+
+    const html_content = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Делаем черный фон, чтобы точно видеть границы плеера */
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #111111; overflow: hidden; }
+    /* Центрируем видео */
+    video { width: 100%; height: 100%; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <video autoplay loop muted playsinline controls>
+    <source src="https://xras.ru/database/aurora/latest/aurora.R.mp4" type="video/mp4">
+  </video>
+</body>
+</html>`;
+
+    const readme = `# 🌌 Космическая погода для Home Assistant (${name})
+
+Этот комплект включает в себя сенсоры для отслеживания магнитных бурь и полярных сияний, визуальную карточку для дашборда и скрипт для Яндекс Станции (Алисы). Все данные адаптированы для региона: ${name}.
+
+## 🛠 Инструкция по установке:
+
+**Шаг 1: Датчики (YAML)**
+Скопируйте код из окна "1. aurora_sensors.yaml" в ваш файл \`configuration.yaml\` (или в отдельный файл \`aurora_sensors.yaml\` внутри папки \`/config/packages/\`, если у вас настроены пакеты). После этого перезагрузите Home Assistant или нажмите "Быстрая перезагрузка" -> "Сущности REST и Scrape".
+
+**Шаг 2: Видео-глобус с сияниями**
+Скопируйте HTML-код из окна "4. aurora.html", создайте новый файл и назовите его \`aurora.html\`. Положите этот файл в папку \`/config/www/\`. *(Примечание: В конфигурации Home Assistant папка \`www\` доступна по веб-ссылке \`/local/\` - именно так она указана в коде карточки).*
+
+**Шаг 3: Визуальная карточка**
+Перейдите на ваш дашборд (Обзор) -> нажмите карандаш в правом верхнем углу (Редактировать) -> Добавить карточку -> найдите в самом низу "Ручная (Manual)" -> полностью удалите оттуда старый код и вставьте код из окна "2. dashboard_card.yaml".
+
+**Шаг 4: Голосовая сводка Алисы**
+Перейдите в Настройки -> Автоматизации и сцены -> Скрипты -> Создать скрипт. Нажмите три точки в правом верхнем углу -> "Редактировать в YAML". Замените всё на код из окна "3. yandex_script.yaml" и сохраните.
+
+## 📌 Зависимости:
+* Для работы голосового скрипта требуется настроенная интеграция Яндекс Станции (Yandex Smart Home) и установленный компонент \`yandex_station\`. Убедитесь, что \`entity_id\` вашей колонки совпадает с тем, что указано в скрипте.
+* Датчики парсят открытые данные Лаборатории солнечной астрономии ИКИ РАН (xras.ru). Пожалуйста, не меняйте \`User-Agent\` и интервалы обновлений, чтобы не создавать нагрузку на их серверы!`;
+
+    const ai_prompt = `ПОЛЯРНОЕ СИЯНИЕ:
+Для определения северного/полярного сияния и вывода информации используй датчики и их атрибуты: sensor.aurora_probability_local (вероятность в г. ${name}) и sensor.aurora_index_latest (текущий индекс активности сияний).
+
+СОЛНЕЧНАЯ АКТИВНОСТЬ:
+Если пользователь спрашивает про солнечную активность, индекс излучения или вспышки на Солнце, используй в ответах значения следующих датчиков: sensor.solar_flare_current_status (текущий статус), sensor.solar_flare_last_info (информация о последней вспышке), sensor.solar_x_ray_latest (сырые данные рентгеновского излучения) и sensor.f10_forecast_today (индекс излучения F10.7).
+
+МАГНИТНЫЕ БУРИ:
+Для ответа на вопросы о магнитных бурях, геомагнитной обстановке и Kp-индексе используй следующие датчики: 
+- Текущая обстановка (сейчас): sensor.kp_current
+- Максимум за сегодня: sensor.kp_forecast_today
+- Ожидается завтра: sensor.kp_forecast_tomorrow
+При ответе учитывай шкалу: Kp до 4 включительно считается нормой (магнитосфера спокойна/возмущена, бурь нет). Значения Kp от 5 и выше означают магнитную бурю (G1 - слабая, G2 - умеренная, G3 - сильная, G4 - очень сильная, G5 - экстремальная).`;
+
+    document.getElementById('yaml').value = sensors;
+    document.getElementById('card').value = card;
+    document.getElementById('script').value = script;
+    document.getElementById('html_file').value = html_content;
+    document.getElementById('readme').value = readme;
+    document.getElementById('prompt').value = ai_prompt;
+}
+
+function copyText(id) {
+    const el = document.getElementById(id);
+    el.select();
+    document.execCommand('copy');
+    alert('Код скопирован!');
+}
+
+function downloadAll() {
+    const s = document.getElementById('citySelect');
+    const name = s.options[s.selectedIndex].text;
+    const content = `КОНФИГУРАЦИЯ ДЛЯ ГОРОДА: ${name}\n\n` +
+                    `1. SENSORS (aurora_sensors.yaml)\n${document.getElementById('yaml').value}\n\n` +
+                    `2. DASHBOARD CARD\n${document.getElementById('card').value}\n\n` +
+                    `3. YANDEX SCRIPT\n${document.getElementById('script').value}\n\n` +
+                    `4. VIDEO HTML (Положить в папку www с именем aurora.html)\n${document.getElementById('html_file').value}\n\n` +
+                    `5. РУКОВОДСТВО ПО УСТАНОВКЕ (README)\n${document.getElementById('readme').value}\n\n` +
+                    `6. ПРОМТ ДЛЯ ИИ-ПОМОЩНИКА\n${document.getElementById('prompt').value}`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `ha_config_${name}.txt`;
+    a.click();
+}
+
+updateConfigs();
+</script>
+
+</body>
+</html>
