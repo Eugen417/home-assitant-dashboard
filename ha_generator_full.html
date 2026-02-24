@@ -181,6 +181,8 @@ function updateConfigs() {
   # 1. Вероятность сияний
   - resource: "https://xras.ru/aurora.html/${alias}/"
     scan_interval: 1800
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     sensor:
       - name: "Aurora Probability Local"
         select: ".aurora_location:has(span.aurora_location_name:contains('${name}')) span.aurora_location_value"
@@ -191,6 +193,8 @@ function updateConfigs() {
   # 2. Текстовые сводки о вспышках на Солнце
   - resource: "https://xras.ru/sun_flares.html"
     scan_interval: 1800
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     sensor:
       - name: "Solar Flare Current Status"
         select: ".graph_lastdata_text"
@@ -270,11 +274,32 @@ sensor:
       User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     value_template: >-
       {% if value_json is defined and value_json.data is defined %}
-        {% set today_data = value_json.data[2] %}
-        {% set msk_time = as_timestamp(now()) + (3 * 3600) %}
-        {% set msk_hour = (msk_time | timestamp_custom('%H', false)) | int %}
-        {% if msk_hour < 3 %}{{ today_data.h00 }}{% elif msk_hour < 6 %}{{ today_data.h03 }}{% elif msk_hour < 9 %}{{ today_data.h06 }}{% elif msk_hour < 12 %}{{ today_data.h09 }}{% elif msk_hour < 15 %}{{ today_data.h12 }}{% elif msk_hour < 18 %}{{ today_data.h15 }}{% elif msk_hour < 21 %}{{ today_data.h18 }}{% else %}{{ today_data.h21 }}{% endif %}
-      {% else %} unknown {% endif %}
+        {% set ns = namespace(latest='unknown') %}
+        {% set hours = ['h00', 'h03', 'h06', 'h09', 'h12', 'h15', 'h18', 'h21'] %}
+        
+        {# 1. Сначала сканируем ВЧЕРА (data[1]) на случай раннего утра, когда за сегодня данных еще ноль #}
+        {% set yesterday = value_json.data[1] %}
+        {% for h in hours %}
+          {% set val = yesterday[h] %}
+          {# Берем только нормальные цифры >= 0, игнорируя null и минусы #}
+          {% if val not in ['null', None, ''] and val | float(-1) >= 0 %}
+            {% set ns.latest = val %}
+          {% endif %}
+        {% endfor %}
+        
+        {# 2. Затем сканируем СЕГОДНЯ (data[0]) и забираем самую свежую цифру #}
+        {% set today = value_json.data[0] %}
+        {% for h in hours %}
+          {% set val = today[h] %}
+          {% if val not in ['null', None, ''] and val | float(-1) >= 0 %}
+            {% set ns.latest = val %}
+          {% endif %}
+        {% endfor %}
+        
+        {{ ns.latest }}
+      {% else %}
+        unknown
+      {% endif %}
     unit_of_measurement: "Kp"
     icon: "mdi:magnet"`;
 
