@@ -238,30 +238,63 @@ sensor:
     json_attributes:
       - time
 
-  # 5. ПРОГНОЗ НА 3 ДНЯ (Берем данные на СЕГОДНЯ - индекс 2)
+  # 5. ПРОГНОЗ НА СЕГОДНЯ (Берем из фактического файла)
   - platform: rest
     name: "Kp Forecast Today"
-    resource: "https://xras.ru/txt/kpf_${id}.json"
+    resource: "https://xras.ru/txt/kp_${id}.json"
     scan_interval: 3600
-    value_template: "{{ value_json.data[2].max_kp }}"
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    value_template: >-
+      {% if value_json is defined and value_json.data is defined %}
+        {{ value_json.data[0].max_kp }}
+      {% else %}
+        unknown
+      {% endif %}
     unit_of_measurement: "Kp"
     icon: "mdi:magnet"
 
-  # 6. Прогноз F10 на сегодня  
+  # 6. Индекс F10 на сегодня  
   - platform: rest
     name: "F10 Forecast Today"
-    resource: "https://xras.ru/txt/kpf_${id}.json"
+    resource: "https://xras.ru/txt/kp_${id}.json"
     scan_interval: 3600
-    value_template: "{{ value_json.data[2].f10 }}"
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    value_template: >-
+      {% if value_json is defined and value_json.data is defined %}
+        {{ value_json.data[0].f10 }}
+      {% else %}
+        unknown
+      {% endif %}
     unit_of_measurement: "sfu"
     icon: "mdi:sun-wireless"
 
-  # 7. ПРОГНОЗ НА 3 ДНЯ (Берем данные на ЗАВТРА - индекс 1)
+  # 7. ПРОГНОЗ НА ЗАВТРА (Умный поиск по точной дате)
   - platform: rest
     name: "Kp Forecast Tomorrow"
     resource: "https://xras.ru/txt/kpf_${id}.json"
     scan_interval: 3600
-    value_template: "{{ value_json.data[1].max_kp }}"
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    value_template: >-
+      {% if value_json is defined and value_json.data is defined %}
+        {# Вычисляем завтрашнюю дату по Москве #}
+        {% set msk_time = as_timestamp(now()) + (3 * 3600) + (24 * 3600) %}
+        {% set tmrw_str = msk_time | timestamp_custom('%Y-%m-%d', false) %}
+        {% set ns = namespace(val='unknown') %}
+        
+        {# Ищем нужную дату в массиве #}
+        {% for day in value_json.data %}
+          {% if day.time == tmrw_str %}
+            {% set ns.val = day.max_kp %}
+          {% endif %}
+        {% endfor %}
+        
+        {{ ns.val }}
+      {% else %}
+        unknown
+      {% endif %}
     unit_of_measurement: "Kp"
     icon: "mdi:magnet-on"
 
@@ -511,4 +544,3 @@ updateConfigs();
 
 </body>
 </html>
-
