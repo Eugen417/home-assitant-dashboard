@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>HA Space Weather Config Generator FULL (v4)</title>
+    <title>HA Space Weather Config Generator FULL (v5)</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 20px; color: #333; }
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
@@ -188,7 +188,7 @@ function updateConfigs() {
         select: ".aurora_location:has(span.aurora_location_name:contains('${name}')) span.aurora_location_value"
         value_template: "{{ value | replace(' %', '') }}"
         unit_of_measurement: "%"
-        icon: "mdi:weather-aurora"
+        icon: "mdi:aurora"
 
   # 2. Текстовые сводки о вспышках на Солнце
   - resource: "https://xras.ru/sun_flares.html"
@@ -382,7 +382,7 @@ cards:
       </div>
 
       <div style="display: flex; align-items: center; margin-bottom: 12px;">
-      <ha-icon icon="mdi:weather-aurora" style="margin-right: 8px;"></ha-icon>
+      <ha-icon icon="mdi:aurora" style="margin-right: 8px;"></ha-icon>
       <a href="https://xras.ru/aurora.html/${alias}/" target="_blank" style="color: var(--primary-color); text-decoration: none;">Вероятность в г. ${name}: <b>{{ states('sensor.aurora_probability_local') }}%</b> <span style="font-size: 0.85em;">(прогноз ↗)</span></a> 
       </div>
 
@@ -544,3 +544,4 @@ updateConfigs();
 
 </body>
 </html>
+
