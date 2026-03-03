@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miele Card Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #03a9f4;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .lang-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .lang-selector button {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .lang-selector button:hover {
+            background-color: #cfcfcf;
+        }
+        .lang-selector button.active {
+            background-color: #03a9f4;
+            color: white;
+            box-shadow: 0 2px 5px rgba(3, 169, 244, 0.4);
+        }
+        
+        /* Layout for two columns */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .left-col {
+            flex: 1;
+            min-width: 350px;
+        }
+        .right-col {
+            flex: 0 0 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .instructions {
+            background: #e1f5fe;
+            border-left: 5px solid #03a9f4;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #0277bd;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .main-btn {
+            background-color: #03a9f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: bold;
+            width: 100%;
+        }
+        .main-btn:hover {
+            background-color: #0288d1;
+        }
+        
+        .preview-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .preview-box h3 {
+            margin-top: 0;
+            color: #555;
+            font-size: 16px;
+        }
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .preview-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .output-group {
+            margin-top: 30px;
+            width: 100%;
+        }
+        textarea {
+            width: 100%;
+            height: 350px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            background: #f8f9fa;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .copy-btn {
+            background-color: #4caf50;
+            margin-top: 10px;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .copy-btn:hover {
+            background-color: #388e3c;
+        }
+        code {
+            background: #cfd8dc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+        .footer a {
+            color: #03a9f4;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lang-selector">
+        <button id="btn-ru" onclick="changeLang('ru')" class="active">Русский</button>
+        <button id="btn-en" onclick="changeLang('en')">English</button>
+        <button id="btn-de" onclick="changeLang('de')">Deutsch</button>
+    </div>
+
+    <h1 id="ui_title">Генератор карточки Miele (Home Assistant)</h1>
+    
+    <div class="main-layout">
+        <div class="left-col">
+            <div class="instructions">
+                <h3 id="ui_instructions_title">Подготовка к установке:</h3>
+                <ol>
+                    <li id="ui_step1">Установите менеджер компонентов <b>HACS</b> (если он еще не установлен).</li>
+                    <li id="ui_step2">Зайдите в HACS -> Интерфейс (Frontend) и установите плагин <code>card-mod</code>. Он необходим для работы кругового прогресс-бара стирки и заливки колб TwinDos.</li>
+                    <li id="ui_step3">Скачайте качественное фото вашей стиральной машины без фона в формате PNG или WEBP. Назовите файл <code>washer.webp</code>.</li>
+                    <li id="ui_step4">В папке вашей конфигурации Home Assistant (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда вашу картинку.<br><i>(Полный путь должен получиться: config/www/miele/washer.webp)</i>.</li>
+                    <li id="ui_step5">Перезагрузите Home Assistant. После этого картинка будет доступна системе по пути <code>/local/miele/washer.webp</code>.</li>
+                </ol>
+            </div>
+
+            <div class="form-group">
+                <label for="entityId" id="ui_entity_label">ID сущности вашей машинки (префикс):</label>
+                <p style="margin-top: 0; font-size: 14px; color: #666;" id="ui_entity_hint">
+                    Зайдите в Настройки -> Устройства, найдите вашу стиральную машину Miele и посмотрите на ID её сенсоров (например, <code>sensor.washer_remaining_time</code>). В данном случае префикс — это <b>washer</b>.
+                </p>
+                <input type="text" id="entityId" value="stiralnaia_mashina" placeholder="washer / stiralnaia_mashina">
+            </div>
+
+            <button class="main-btn" id="ui_btn_generate" onclick="generateYAML()">Сгенерировать код</button>
+        </div>
+
+        <div class="right-col">
+            <div class="preview-box">
+                <h3 id="ui_preview_title">Превью результата:</h3>
+                <img src="washer.webp" alt="Miele Washer Preview" class="preview-image" onerror="this.onerror=null; this.src='washer.jpg'; if(this.src=='washer.jpg'){this.alt='Положите washer.webp или washer.jpg в эту же папку для превью';}">
+                <div class="preview-hint" id="ui_preview_hint">
+                    * Положите файл washer.webp или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="output-group">
+        <label for="yamlOutput" id="ui_output_label">Готовый YAML-код для карточки "Ручная (Manual)":</label>
+        <textarea id="yamlOutput" readonly></textarea>
+        <button class="copy-btn" id="ui_btn_copy" onclick="copyToClipboard()">📋 Скопировать код</button>
+    </div>
+    
+    <div class="footer" id="ui_footer">
+        Разработано <a href="https://github.com/Eugen417" target="_blank">Eugen417</a> для стиральных машин Miele W1 (PowerWash & TwinDos & Steam Passion)
+    </div>
+</div>
+
+<textarea id="yamlTemplate" style="display:none;">
+type: picture-elements
+image: /local/miele/washer.webp
+elements:
+  - type: conditional
+    conditions:
+      - entity: sensor.ENTITY_PREFIX_remaining_time
+        state_not: unknown
+      - entity: sensor.ENTITY_PREFIX_remaining_time
+        state_not: unavailable
+    elements:
+      - type: state-label
+        entity: sensor.ENTITY_PREFIX_remaining_time
+        title: {{CARD_REMAINING}}
+        style:
+          top: 40%
+          left: 50%
+          color: "#ff8c00"
+          font-size: 24px
+          font-weight: bold
+          text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0px 0px 10px black
+          transform: translate(-55%, -55%)
+          
+      - type: state-label
+        entity: sensor.ENTITY_PREFIX_spin_speed
+        style:
+          top: 45%
+          left: 50%
+          color: "#ff8c00"
+          font-size: 14px
+          font-weight: bold
+          text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0px 0px 8px black
+          transform: translate(-50%, -50%)
+          
+      - type: state-label
+        entity: sensor.ENTITY_PREFIX_program
+        style:
+          top: 50%
+          left: 50%
+          color: "#ff8c00"
+          font-size: 14px
+          font-weight: bold
+          text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0px 0px 8px black
+          transform: translate(-50%, -50%)
+          
+      - type: state-label
+        entity: sensor.ENTITY_PREFIX_program_phase
+        style:
+          top: 5.5%
+          left: 48%
+          color: "#00ff00"
+          font-size: 14px
+          font-weight: bold
+          text-shadow: 1px 1px 3px black
+          transform: translate(-50%, -50%)
+
+  # ==========================================
+  # ПИТАНИЕ (Оранжевая - выкл, Зеленая - вкл)
+  # ==========================================
+  - type: conditional
+    conditions:
+      - entity: switch.ENTITY_PREFIX_power
+        state: "off"
+    elements:
+      - type: icon
+        icon: mdi:power
+        title: {{CARD_TURN_ON}}
+        tap_action:
+          action: call-service
+          service: switch.turn_on
+          target:
+            entity_id: switch.ENTITY_PREFIX_power
+        style:
+          top: 5.5%
+          left: 82%
+          color: "#ff8c00"
+          transform: translate(-50%, -50%) scale(1.5)
+
+  - type: conditional
+    conditions:
+      - entity: switch.ENTITY_PREFIX_power
+        state: "on"
+    elements:
+      - type: icon
+        icon: mdi:power
+        title: {{CARD_TURN_OFF}}
+        tap_action:
+          action: call-service
+          service: switch.turn_off
+          target:
+            entity_id: switch.ENTITY_PREFIX_power
+        style:
+          top: 5.5%
+          left: 82%
+          color: "#00ff00"
+          transform: translate(-50%, -50%) scale(1.5)
+
+  # ==========================================
+  # КНОПКИ УПРАВЛЕНИЯ И ЗАМКИ
+  # ==========================================
+  - type: conditional
+    conditions:
+      - entity: switch.ENTITY_PREFIX_power
+        state: "on"
+      - entity: sensor.ENTITY_PREFIX_program_phase
+        state: not_running
+    elements:
+      - type: icon
+        icon: mdi:play-circle-outline
+        title: {{CARD_START}}
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.ENTITY_PREFIX_zapustit
+        style:
+          top: 5.5%
+          left: 61%
+          color: "#00ff00"
+          transform: translate(-50%, -50%) scale(1.27)
+          
+  - type: conditional
+    conditions:
+      - entity: switch.ENTITY_PREFIX_power
+        state: "on"
+      - entity: sensor.ENTITY_PREFIX_program_phase
+        state_not: not_running
+    elements:
+      - type: icon
+        icon: mdi:stop-circle-outline
+        title: {{CARD_STOP}}
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.ENTITY_PREFIX_ostanovit
+        style:
+          top: 5.5%
+          left: 61%
+          color: "#ff0000"
+          transform: translate(-50%, -50%) scale(1.27)
+          
+  - type: conditional
+    conditions:
+      - entity: binary_sensor.ENTITY_PREFIX_door
+        state: "on"
+    elements:
+      - type: icon
+        icon: mdi:lock-open-variant
+        title: {{CARD_DOOR_OPEN}}
+        style:
+          top: 42%
+          left: 18%
+          color: "#cccccc"
+          transform: translate(-50%, -50%) scale(1.6)
+          
+  - type: conditional
+    conditions:
+      - entity: binary_sensor.ENTITY_PREFIX_door
+        state: "off"
+    elements:
+      - type: icon
+        icon: mdi:lock
+        title: {{CARD_DOOR_CLOSED}}
+        style:
+          top: 42%
+          left: 18%
+          color: "#00ff00"
+          transform: translate(-50%, -50%) scale(1.6)
+          
+  # ==========================================
+  # КОЛЬЦО ПРОГРЕССА
+  # ==========================================
+  - type: conditional
+    conditions:
+      - entity: switch.ENTITY_PREFIX_power
+        state: "on"
+    elements:
+      - type: image
+        image: >-
+          data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=
+        style:
+          top: 43%
+          left: 50%
+          width: 55%
+          transform: translate(-50%, -50%)
+          pointer-events: none
+        card_mod:
+          style: |
+            :host {
+              aspect-ratio: 1 / 1 !important;
+              border-radius: 50% !important;
+              
+              /* Высчитываем процент */
+              {% set elapsed = states('sensor.ENTITY_PREFIX_elapsed_time') | float(0) %}
+              {% set remain = states('sensor.ENTITY_PREFIX_remaining_time') | float(0) %}
+              {% set total = elapsed + remain %}
+              {% set progress = (elapsed / total * 100) | round(0) if total > 0 else 0 %}
+              
+              /* Рисуем фон */
+              background: conic-gradient(#ff8c00 0%, #ff8c00 {{ progress }}%, rgba(150, 150, 150, 0.4) {{ progress }}%, rgba(150, 150, 150, 0.4) 100%) !important;
+              
+              /* Вырез в центре */
+              -webkit-mask-image: radial-gradient(closest-side, transparent 93%, black 94%) !important;
+              mask-image: radial-gradient(closest-side, transparent 93%, black 94%) !important;
+            }
+
+  # ==========================================
+  # ПАНЕЛЬ TWINDOS (С динамической заливкой и тенью)
+  # ==========================================
+  
+  # --- ЛЕВЫЙ БЛОК (Фаза 1) ---
+  - type: image
+    image: >-
+      data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=
+    style:
+      top: 86%
+      left: 64%
+      width: 20%
+      height: 14%
+      border-radius: 6px
+      transform: translate(-85%, -50%)
+    card_mod:
+      style: |
+        :host {
+          {% set level = states('sensor.ENTITY_PREFIX_twindos_1_level') | float(0) %}
+          background: linear-gradient(to top, rgba(0, 191, 255, 0.5) {{ level }}%, rgba(140, 140, 140, 0.75) {{ level }}%) !important;
+        }
+        
+  - type: image
+    image: >-
+      data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Ctext x='40' y='15' fill='white' font-size='14' font-family='sans-serif' font-weight='bold' text-anchor='middle'%3E{{CARD_PHASE1}}%3C/text%3E%3C/svg%3E
+    style:
+      top: 83%
+      left: 56%
+      width: 15%
+      transform: translate(-50%, -50%)
+      filter: drop-shadow(1px 1px 2px black)
+      
+  - type: state-label
+    entity: sensor.ENTITY_PREFIX_twindos_1_level
+    style:
+      top: 88%
+      left: 60%
+      color: "#ffffff"
+      font-size: 16px
+      font-weight: bold
+      text-align: center
+      text-shadow: 1px 1px 3px black
+      transform: translate(-80%, -50%)
+      
+  # --- ПРАВЫЙ БЛОК (Фаза 2) ---
+  - type: image
+    image: >-
+      data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=
+    style:
+      top: 86%
+      left: 84%
+      width: 20%
+      height: 14%
+      border-radius: 6px
+      transform: translate(-55%, -50%)
+    card_mod:
+      style: |
+        :host {
+          {% set level = states('sensor.ENTITY_PREFIX_twindos_2_level') | float(0) %}
+          background: linear-gradient(to top, rgba(0, 191, 255, 0.5) {{ level }}%, rgba(140, 140, 140, 0.75) {{ level }}%) !important;
+        }
+        
+  - type: image
+    image: >-
+      data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 20'%3E%3Ctext x='40' y='15' fill='white' font-size='14' font-family='sans-serif' font-weight='bold' text-anchor='middle'%3E{{CARD_PHASE2}}%3C/text%3E%3C/svg%3E
+    style:
+      top: 83%
+      left: 84%
+      width: 15%
+      transform: translate(-55%, -50%)
+      filter: drop-shadow(1px 1px 2px black)
+      
+  - type: state-label
+    entity: sensor.ENTITY_PREFIX_twindos_2_level
+    style:
+      top: 88%
+      left: 84%
+      color: "#ffffff"
+      font-size: 16px
+      font-weight: bold
+      text-align: center
+      text-shadow: 1px 1px 3px black
+      transform: translate(-55%, -50%)
+
+  # ==========================================
+  # СЧЕТЧИКИ ВОДЫ И ЭНЕРГИИ
+  # ==========================================
+  - type: icon
+    icon: mdi:lightning-bolt-outline
+    style:
+      top: 20%
+      left: 90%
+      color: "#ff8c00"
+      transform: translate(-50%, -50%) scale(1.2)
+  - type: state-label
+    entity: sensor.ENTITY_PREFIX_energy_consumption
+    style:
+      top: 24%
+      left: 90%
+      color: "#ffffff"
+      font-size: 15px
+      font-weight: bold
+      text-shadow: 1px 1px 3px black
+      transform: translate(-50%, -50%)
+
+  - type: icon
+    icon: mdi:water-outline
+    style:
+      top: 87%
+      left: 20%
+      color: "#00bfff"
+      transform: translate(-50%, -50%) scale(1.2)
+  - type: state-label
+    entity: sensor.ENTITY_PREFIX_water_consumption
+    style:
+      top: 91%
+      left: 20%
+      color: "#ffffff"
+      font-size: 15px
+      font-weight: bold
+      text-shadow: 1px 1px 3px black
+      transform: translate(-50%, -50%)
+</textarea>
+
+<script>
+    const translations = {
+        ru: {
+            title: "Генератор карточки Miele (Home Assistant)",
+            instructions_title: "Подготовка к установке:",
+            step1: "Установите менеджер компонентов <b>HACS</b> (если он еще не установлен).",
+            step2: "Зайдите в HACS -> Интерфейс (Frontend) и установите плагин <code>card-mod</code>. Он необходим для работы кругового прогресс-бара и заливки колб TwinDos.",
+            step3: "Скачайте качественное фото вашей машинки без фона в формате PNG или WEBP. Назовите файл <code>washer.webp</code>.",
+            step4: "В папке вашей конфигурации (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда картинку. <br><i>(Путь: config/www/miele/washer.webp)</i>.",
+            step5: "Перезагрузите Home Assistant. Картинка будет доступна по пути <code>/local/miele/washer.webp</code>.",
+            entity_label: "ID сущности вашей машинки (префикс):",
+            entity_hint: "Например, если датчик называется <code>sensor.washer_remaining_time</code>, префикс — это <b>washer</b>.",
+            btn_generate: "Сгенерировать код",
+            preview_title: "Превью результата:",
+            preview_hint: "* Положите файл washer.webp или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.",
+            output_label: "Готовый YAML-код для карточки \"Ручная (Manual)\":",
+            btn_copy: "📋 Скопировать код",
+            btn_copied: "✅ Скопировано!",
+            c_remaining: "Осталось",
+            c_turn_on: "Включить",
+            c_turn_off: "Выключить",
+            c_start: "Запустить",
+            c_stop: "Остановить",
+            c_door_open: "Дверца открыта",
+            c_door_closed: "Дверца закрыта",
+            c_phase1: "ФАЗА 1",
+            c_phase2: "ФАЗА 2",
+            footer: "Разработано <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> для стиральных машин Miele W1 (PowerWash & TwinDos & Steam Passion)"
+        },
+        en: {
+            title: "Miele Card Generator (Home Assistant)",
+            instructions_title: "Installation preparation:",
+            step1: "Install the <b>HACS</b> component manager (if not already installed).",
+            step2: "Go to HACS -> Frontend and install the <code>card-mod</code> plugin. It's required for the circular washing progress bar and TwinDos levels.",
+            step3: "Download a high-quality photo of your washing machine without a background (PNG or WEBP). Name the file <code>washer.webp</code>.",
+            step4: "In your Home Assistant config folder (where <i>configuration.yaml</i> is), create a <code>www</code> folder, inside it a <code>miele</code> folder, and place your image there. <br><i>(Path: config/www/miele/washer.webp)</i>.",
+            step5: "Restart Home Assistant. The image will be available at <code>/local/miele/washer.webp</code>.",
+            entity_label: "Your washing machine's entity ID (prefix):",
+            entity_hint: "For example, if the sensor is <code>sensor.washer_remaining_time</code>, the prefix is <b>washer</b>.",
+            btn_generate: "Generate Code",
+            preview_title: "Result Preview:",
+            preview_hint: "* Place your washer.webp or washer.jpg file next to this HTML file to see the preview image.",
+            output_label: "Ready YAML code for the \"Manual\" card:",
+            btn_copy: "📋 Copy Code",
+            btn_copied: "✅ Copied!",
+            c_remaining: "Remaining",
+            c_turn_on: "Turn on",
+            c_turn_off: "Turn off",
+            c_start: "Start",
+            c_stop: "Stop",
+            c_door_open: "Door open",
+            c_door_closed: "Door closed",
+            c_phase1: "PHASE 1",
+            c_phase2: "PHASE 2",
+            footer: "Developed by <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> for Miele W1 (PowerWash & TwinDos & Steam Passion) washing machines."
+        },
+        de: {
+            title: "Miele Karten-Generator (Home Assistant)",
+            instructions_title: "Installationsvorbereitung:",
+            step1: "Installieren Sie den <b>HACS</b>-Komponenten-Manager (falls noch nicht installiert).",
+            step2: "Gehen Sie zu HACS -> Frontend und installieren Sie das <code>card-mod</code>-Plugin. Es wird für die kreisförmige Fortschrittsanzeige und TwinDos benötigt.",
+            step3: "Laden Sie ein hochwertiges Foto Ihrer Waschmaschine ohne Hintergrund herunter (PNG oder WEBP). Nennen Sie die Datei <code>washer.webp</code>.",
+            step4: "Erstellen Sie im Config-Ordner (wo <i>configuration.yaml</i> liegt) einen <code>www</code>-Ordner, darin einen <code>miele</code>-Ordner und legen Sie Ihr Bild dort ab. <br><i>(Pfad: config/www/miele/washer.webp)</i>.",
+            step5: "Starten Sie Home Assistant neu. Das Bild ist dann unter <code>/local/miele/washer.webp</code> verfügbar.",
+            entity_label: "Entitäts-ID Ihrer Waschmaschine (Präfix):",
+            entity_hint: "Beispiel: Wenn der Sensor <code>sensor.washer_remaining_time</code> heißt, ist das Präfix <b>washer</b>.",
+            btn_generate: "Code generieren",
+            preview_title: "Vorschau:",
+            preview_hint: "* Legen Sie die Datei washer.webp oder washer.jpg in denselben Ordner wie diesen HTML-Generator, um das Bild zu sehen.",
+            output_label: "Fertiger YAML-Code für die \"Manuelle\" Karte:",
+            btn_copy: "📋 Code kopieren",
+            btn_copied: "✅ Kopiert!",
+            c_remaining: "Verbleibend",
+            c_turn_on: "Einschalten",
+            c_turn_off: "Ausschalten",
+            c_start: "Starten",
+            c_stop: "Stoppen",
+            c_door_open: "Tür offen",
+            c_door_closed: "Tür geschlossen",
+            c_phase1: "PHASE 1",
+            c_phase2: "PHASE 2",
+            footer: "Entwickelt von <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> für Miele W1 (PowerWash & TwinDos & Steam Passion) Waschmaschinen."
+        }
+    };
+
+    let currentLang = 'ru';
+
+    function changeLang(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+
+        document.getElementById('btn-ru').classList.remove('active');
+        document.getElementById('btn-en').classList.remove('active');
+        document.getElementById('btn-de').classList.remove('active');
+        document.getElementById('btn-' + lang).classList.add('active');
+
+        document.getElementById('ui_title').innerText = t.title;
+        document.getElementById('ui_instructions_title').innerText = t.instructions_title;
+        document.getElementById('ui_step1').innerHTML = t.step1;
+        document.getElementById('ui_step2').innerHTML = t.step2;
+        document.getElementById('ui_step3').innerHTML = t.step3;
+        document.getElementById('ui_step4').innerHTML = t.step4;
+        document.getElementById('ui_step5').innerHTML = t.step5;
+        document.getElementById('ui_entity_label').innerText = t.entity_label;
+        document.getElementById('ui_entity_hint').innerHTML = t.entity_hint;
+        document.getElementById('ui_btn_generate').innerText = t.btn_generate;
+        document.getElementById('ui_preview_title').innerText = t.preview_title;
+        document.getElementById('ui_preview_hint').innerText = t.preview_hint;
+        document.getElementById('ui_output_label').innerText = t.output_label;
+        document.getElementById('ui_btn_copy').innerText = t.btn_copy;
+        
+        document.getElementById('ui_footer').innerHTML = t.footer;
+
+        generateYAML();
+    }
+
+    function generateYAML() {
+        let entityPrefix = document.getElementById("entityId").value.trim();
+        if(!entityPrefix) {
+            entityPrefix = "washer";
+        }
+        
+        let template = document.getElementById("yamlTemplate").value;
+        const t = translations[currentLang];
+
+        let result = template
+            .replace(/ENTITY_PREFIX/g, entityPrefix)
+            .replace(/\{\{CARD_REMAINING\}\}/g, t.c_remaining)
+            .replace(/\{\{CARD_TURN_ON\}\}/g, t.c_turn_on)
+            .replace(/\{\{CARD_TURN_OFF\}\}/g, t.c_turn_off)
+            .replace(/\{\{CARD_START\}\}/g, t.c_start)
+            .replace(/\{\{CARD_STOP\}\}/g, t.c_stop)
+            .replace(/\{\{CARD_DOOR_OPEN\}\}/g, t.c_door_open)
+            .replace(/\{\{CARD_DOOR_CLOSED\}\}/g, t.c_door_closed)
+            .replace(/\{\{CARD_PHASE1\}\}/g, encodeURIComponent(t.c_phase1))
+            .replace(/\{\{CARD_PHASE2\}\}/g, encodeURIComponent(t.c_phase2));
+        
+        document.getElementById("yamlOutput").value = result;
+    }
+
+    function copyToClipboard() {
+        let textarea = document.getElementById("yamlOutput");
+        textarea.select();
+        document.execCommand("copy");
+        
+        let btn = document.querySelector(".copy-btn");
+        let originalText = translations[currentLang].btn_copy;
+        btn.innerText = translations[currentLang].btn_copied;
+        btn.style.backgroundColor = "#2e7d32";
+        
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = "#4caf50";
+        }, 2000);
+    }
+
+    window.onload = function() {
+        changeLang('ru');
+    };
+</script>
+
+</body>
+</html>
