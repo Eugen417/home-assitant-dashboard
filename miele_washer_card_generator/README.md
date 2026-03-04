@@ -1,5 +1,7 @@
 # 🧺 Miele W1 Interactive Card Generator for Home Assistant
 
+🌐 **Русский** | [English](README_en.md)
+
 [![Home Assistant](https://img.shields.io/badge/Home_Assistant-Dashboard-blue.svg)](https://www.home-assistant.io/)
 [![HACS](https://img.shields.io/badge/HACS-Custom_Card-orange.svg)](https://hacs.xyz/)
 
