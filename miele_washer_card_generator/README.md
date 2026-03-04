@@ -5,9 +5,7 @@
 
 Интерактивная карточка (Picture Elements) для стиральных машин Miele (специально для моделей серии W1 с TwinDos) и **встроенный HTML-генератор кода** для её быстрой настройки без необходимости вручную править YAML.
 
-![Miele Card Preview][(washer.webp) ][(https://github.com/Eugen417/home-assitant-dashboard/new/main/miele_washer_card_generator#:~:text=washer.webp)](https://github.com/Eugen417/home-assitant-dashboard/blob/main/miele_washer_card_generator/washer.webp)
-
-
+![Miele Washer](washer.webp)
 
 ## ✨ Возможности
 
@@ -22,24 +20,24 @@
 
 ## ⚙️ Требования
 
-Для работы CSS-градиентов (кольца прогресса и заливки TwinDos) необходим плагин **card-mod**.
-* Установите [lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod) через магазин **HACS** (раздел Frontend/Интерфейс).
+Для работы CSS-градиентов (кольца прогресса и динамической заливки TwinDos) необходим плагин **card-mod**.
+* Установите [lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod) через магазин **HACS** (раздел Frontend / Интерфейс).
 
 ## 🚀 Установка и использование
 
 1. **Скачайте файлы**
-   Скачайте файл [miele_washer_card_generator.html](miele_washer_card_generator.html) и картинку без фона `washer.webp` из этого репозитория.
+   Скачайте файл генератора [miele_washer_card_generator.html](miele_washer_card_generator.html) и картинку без фона [washer.webp](washer.webp) из этого репозитория.
 
 2. **Загрузите картинку в Home Assistant**
    * Перейдите в папку вашей конфигурации Home Assistant (там, где находится файл `configuration.yaml`).
    * Создайте (если еще нет) папку `www`, а внутри неё папку `miele`.
    * Поместите скачанный файл `washer.webp` по пути: `config/www/miele/washer.webp`.
-   * **Перезагрузите Home Assistant.** После этого картинка станет доступна по локальному пути `/local/miele/washer.webp`.
+   * **Перезагрузите Home Assistant.** После этого картинка станет доступна системе по локальному пути `/local/miele/washer.webp`.
 
 3. **Сгенерируйте код**
-   * Откройте скачанный файл `miele_washer_card_generator.html` в любом браузере. *(Если положить картинку `washer.webp` в ту же папку на компьютере, в генераторе появится красивое превью).*
+   * Откройте скачанный файл `miele_washer_card_generator.html` в любом браузере на вашем компьютере. *(Если положить картинку `washer.webp` в ту же папку, генератор покажет красивое превью).*
    * Выберите нужный язык интерфейса.
-   * Введите префикс вашей стиральной машины. Например, если сенсор времени называется `sensor.stiralnaia_mashina_remaining_time`, ваш префикс — **stiralnaia_mashina**.
+   * Введите префикс сущности вашей стиральной машины. Например, если сенсор времени называется `sensor.stiralnaia_mashina_remaining_time`, ваш префикс — **stiralnaia_mashina**.
    * Нажмите **"Сгенерировать код"** и скопируйте результат.
 
 4. **Добавьте на дашборд**
@@ -50,4 +48,3 @@
 ## 👨‍💻 Автор
 
 Разработано [Eugen417](https://github.com/Eugen417) для интеграции стиральных машин Miele (PowerWash & TwinDos & Steam Passion) в Home Assistant.
-
