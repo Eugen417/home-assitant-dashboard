@@ -5,7 +5,7 @@
 
 Интерактивная карточка (Picture Elements) для стиральных машин Miele (специально для моделей серии W1 с TwinDos) и **встроенный HTML-генератор кода** для её быстрой настройки без необходимости вручную править YAML.
 
-![Miele Washer](washer.webp)
+<img src="washer.webp" alt="Miele Washer" width="300">
 
 ## ✨ Возможности
 
@@ -46,5 +46,4 @@
    * Вставьте скопированный код и сохраните!
 
 ## 👨‍💻 Автор
-
 Разработано [Eugen417](https://github.com/Eugen417) для интеграции стиральных машин Miele (PowerWash & TwinDos & Steam Passion) в Home Assistant.
