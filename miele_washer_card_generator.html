@@ -209,9 +209,9 @@
                 <ol>
                     <li id="ui_step1">Установите менеджер компонентов <b>HACS</b> (если он еще не установлен).</li>
                     <li id="ui_step2">Зайдите в HACS -> Интерфейс (Frontend) и установите плагин <code>card-mod</code>. Он необходим для работы кругового прогресс-бара стирки и заливки колб TwinDos.</li>
-                    <li id="ui_step3">Скачайте качественное фото вашей стиральной машины без фона в формате PNG или WEBP. Назовите файл <code>washer.webp</code>.</li>
-                    <li id="ui_step4">В папке вашей конфигурации Home Assistant (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда вашу картинку.<br><i>(Полный путь должен получиться: config/www/miele/washer.webp)</i>.</li>
-                    <li id="ui_step5">Перезагрузите Home Assistant. После этого картинка будет доступна системе по пути <code>/local/miele/washer.webp</code>.</li>
+                    <li id="ui_step3">Скачайте качественное фото вашей стиральной машины без фона в формате PNG. Назовите файл <code>washer.png</code>.</li>
+                    <li id="ui_step4">В папке вашей конфигурации Home Assistant (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда вашу картинку.<br><i>(Полный путь должен получиться: config/www/miele/washer.png)</i>.</li>
+                    <li id="ui_step5">Перезагрузите Home Assistant. После этого картинка будет доступна системе по пути <code>/local/miele/washer.png</code>.</li>
                 </ol>
             </div>
 
@@ -229,9 +229,9 @@
         <div class="right-col">
             <div class="preview-box">
                 <h3 id="ui_preview_title">Превью результата:</h3>
-                <img src="washer.webp" alt="Miele Washer Preview" class="preview-image" onerror="this.onerror=null; this.src='washer.jpg'; if(this.src=='washer.jpg'){this.alt='Положите washer.webp или washer.jpg в эту же папку для превью';}">
+                <img src="washer.png" alt="Miele Washer Preview" class="preview-image" onerror="this.onerror=null; this.src='washer.jpg'; if(this.src=='washer.jpg'){this.alt='Положите washer.png или washer.jpg в эту же папку для превью';}">
                 <div class="preview-hint" id="ui_preview_hint">
-                    * Положите файл washer.webp или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.
+                    * Положите файл washer.png или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.
                 </div>
             </div>
         </div>
@@ -250,7 +250,7 @@
 
 <textarea id="yamlTemplate" style="display:none;">
 type: picture-elements
-image: /local/miele/washer.webp
+image: /local/miele/washer.png
 elements:
   - type: conditional
     conditions:
@@ -586,14 +586,14 @@ elements:
             instructions_title: "Подготовка к установке:",
             step1: "Установите менеджер компонентов <b>HACS</b> (если он еще не установлен).",
             step2: "Зайдите в HACS -> Интерфейс (Frontend) и установите плагин <code>card-mod</code>. Он необходим для работы кругового прогресс-бара и заливки колб TwinDos.",
-            step3: "Скачайте качественное фото вашей машинки без фона в формате PNG или WEBP. Назовите файл <code>washer.webp</code>.",
-            step4: "В папке вашей конфигурации (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда картинку. <br><i>(Путь: config/www/miele/washer.webp)</i>.",
-            step5: "Перезагрузите Home Assistant. Картинка будет доступна по пути <code>/local/miele/washer.webp</code>.",
+            step3: "Скачайте качественное фото вашей машинки без фона в формате PNG. Назовите файл <code>washer.png</code>.",
+            step4: "В папке вашей конфигурации (где лежит <i>configuration.yaml</i>) создайте папку <code>www</code>, внутри неё папку <code>miele</code>, и положите туда картинку. <br><i>(Путь: config/www/miele/washer.png)</i>.",
+            step5: "Перезагрузите Home Assistant. Картинка будет доступна по пути <code>/local/miele/washer.png</code>.",
             entity_label: "ID сущности вашей машинки (префикс):",
             entity_hint: "Например, если датчик называется <code>sensor.washer_remaining_time</code>, префикс — это <b>washer</b>.",
             btn_generate: "Сгенерировать код",
             preview_title: "Превью результата:",
-            preview_hint: "* Положите файл washer.webp или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.",
+            preview_hint: "* Положите файл washer.png или washer.jpg рядом с этим генератором, чтобы увидеть превью вашей машинки.",
             output_label: "Готовый YAML-код для карточки \"Ручная (Manual)\":",
             btn_copy: "📋 Скопировать код",
             btn_copied: "✅ Скопировано!",
@@ -613,14 +613,14 @@ elements:
             instructions_title: "Installation preparation:",
             step1: "Install the <b>HACS</b> component manager (if not already installed).",
             step2: "Go to HACS -> Frontend and install the <code>card-mod</code> plugin. It's required for the circular washing progress bar and TwinDos levels.",
-            step3: "Download a high-quality photo of your washing machine without a background (PNG or WEBP). Name the file <code>washer.webp</code>.",
-            step4: "In your Home Assistant config folder (where <i>configuration.yaml</i> is), create a <code>www</code> folder, inside it a <code>miele</code> folder, and place your image there. <br><i>(Path: config/www/miele/washer.webp)</i>.",
-            step5: "Restart Home Assistant. The image will be available at <code>/local/miele/washer.webp</code>.",
+            step3: "Download a high-quality photo of your washing machine without a background in PNG format. Name the file <code>washer.png</code>.",
+            step4: "In your Home Assistant config folder (where <i>configuration.yaml</i> is), create a <code>www</code> folder, inside it a <code>miele</code> folder, and place your image there. <br><i>(Path: config/www/miele/washer.png)</i>.",
+            step5: "Restart Home Assistant. The image will be available at <code>/local/miele/washer.png</code>.",
             entity_label: "Your washing machine's entity ID (prefix):",
             entity_hint: "For example, if the sensor is <code>sensor.washer_remaining_time</code>, the prefix is <b>washer</b>.",
             btn_generate: "Generate Code",
             preview_title: "Result Preview:",
-            preview_hint: "* Place your washer.webp or washer.jpg file next to this HTML file to see the preview image.",
+            preview_hint: "* Place your washer.png or washer.jpg file next to this HTML file to see the preview image.",
             output_label: "Ready YAML code for the \"Manual\" card:",
             btn_copy: "📋 Copy Code",
             btn_copied: "✅ Copied!",
@@ -640,14 +640,14 @@ elements:
             instructions_title: "Installationsvorbereitung:",
             step1: "Installieren Sie den <b>HACS</b>-Komponenten-Manager (falls noch nicht installiert).",
             step2: "Gehen Sie zu HACS -> Frontend und installieren Sie das <code>card-mod</code>-Plugin. Es wird für die kreisförmige Fortschrittsanzeige und TwinDos benötigt.",
-            step3: "Laden Sie ein hochwertiges Foto Ihrer Waschmaschine ohne Hintergrund herunter (PNG oder WEBP). Nennen Sie die Datei <code>washer.webp</code>.",
-            step4: "Erstellen Sie im Config-Ordner (wo <i>configuration.yaml</i> liegt) einen <code>www</code>-Ordner, darin einen <code>miele</code>-Ordner und legen Sie Ihr Bild dort ab. <br><i>(Pfad: config/www/miele/washer.webp)</i>.",
-            step5: "Starten Sie Home Assistant neu. Das Bild ist dann unter <code>/local/miele/washer.webp</code> verfügbar.",
+            step3: "Laden Sie ein hochwertiges Foto Ihrer Waschmaschine ohne Hintergrund im PNG-Format herunter. Nennen Sie die Datei <code>washer.png</code>.",
+            step4: "Erstellen Sie im Config-Ordner (wo <i>configuration.yaml</i> liegt) einen <code>www</code>-Ordner, darin einen <code>miele</code>-Ordner und legen Sie Ihr Bild dort ab. <br><i>(Pfad: config/www/miele/washer.png)</i>.",
+            step5: "Starten Sie Home Assistant neu. Das Bild ist dann unter <code>/local/miele/washer.png</code> verfügbar.",
             entity_label: "Entitäts-ID Ihrer Waschmaschine (Präfix):",
             entity_hint: "Beispiel: Wenn der Sensor <code>sensor.washer_remaining_time</code> heißt, ist das Präfix <b>washer</b>.",
             btn_generate: "Code generieren",
             preview_title: "Vorschau:",
-            preview_hint: "* Legen Sie die Datei washer.webp oder washer.jpg in denselben Ordner wie diesen HTML-Generator, um das Bild zu sehen.",
+            preview_hint: "* Legen Sie die Datei washer.png oder washer.jpg in denselben Ordner wie diesen HTML-Generator, um das Bild zu sehen.",
             output_label: "Fertiger YAML-Code für die \"Manuelle\" Karte:",
             btn_copy: "📋 Code kopieren",
             btn_copied: "✅ Kopiert!",
