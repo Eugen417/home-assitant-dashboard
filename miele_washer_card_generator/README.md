@@ -5,7 +5,23 @@
 
 Интерактивная карточка (Picture Elements) для стиральных машин Miele (специально для моделей серии W1 с TwinDos) и **встроенный HTML-генератор кода** для её быстрой настройки без необходимости вручную править YAML.
 
-<img src="washer.webp" alt="Miele Washer" width="300">
+<p align="center">
+  <img src="washer.webp" alt="Miele Washer" width="300">
+</p>
+
+## 📸 Галерея
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8e72f698-32e8-4009-a9a2-58659ae3cd75" alt="Общий вид" width="800">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/692fc4a2-0797-4759-b871-1422a7d74700" alt="Скриншот 1" width="250">
+  &nbsp;&nbsp;
+  <img src="https://github.com/user-attachments/assets/e58f489b-fff7-48b1-8b67-80f270303b09" alt="Скриншот 2" width="250">
+  &nbsp;&nbsp;
+  <img src="https://github.com/user-attachments/assets/adb5381b-1403-4a35-922a-0caf50d287c0" alt="Скриншот 3" width="250">
+</p>
 
 ## ✨ Возможности
 
