@@ -5,7 +5,7 @@
 
 Интерактивная карточка (Picture Elements) для стиральных машин Miele (специально для моделей серии W1 с TwinDos) и **встроенный HTML-генератор кода** для её быстрой настройки без необходимости вручную править YAML.
 
-![Miele Card Preview][(washer.webp) ](https://github.com/Eugen417/home-assitant-dashboard/new/main/miele_washer_card_generator#:~:text=washer.webp)
+![Miele Card Preview][(washer.webp) ][(https://github.com/Eugen417/home-assitant-dashboard/new/main/miele_washer_card_generator#:~:text=washer.webp)](https://github.com/Eugen417/home-assitant-dashboard/blob/main/miele_washer_card_generator/washer.webp)
 
 
 
