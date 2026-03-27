@@ -421,7 +421,7 @@
     this.config = { 
         image: '/local/miele/washer.webp', 
         appliance_type: 'washer', 
-        lang: 'en', 
+        lang: 'ru', 
         ...config 
     };
     const base = this.config.entity; 
@@ -455,7 +455,7 @@
 
   translate(val) {
     if (!val) return '';
-    const lang = this.config.lang || 'en';
+    const lang = this.config.lang || 'ru';
     const key = val.toLowerCase().replace(/ /g, '_');
     return this.translations[lang][key] || (val.charAt(0).toUpperCase() + val.slice(1).replace(/_/g, ' '));
   }
@@ -590,7 +590,7 @@
     this.setText('.drying-step', (on && this._hass.states[this.entities.drying_step]) ? (inv(ds) ? '-' : this.translate(ds)) : '');
     
     const rem = s(this.entities.remaining); 
-    const lang = this.config.lang || 'en';
+    const lang = this.config.lang || 'ru';
     this.setText('.remaining-time', on ? (inv(rem) ? '-' : \`\${rem} \${this.translations[lang]['min']}\`) : '');
     
     if (isD) {
@@ -698,7 +698,7 @@ window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance C
             label_washer_prefix: "Waschmaschine Präfix:",
             label_dryer_prefix: "Trockner Präfix:",
             label_yaml_washer: "Block 1: YAML für Waschmaschine",
-            label_yaml_dryer: "Block 2: YAML для Trockner",
+            label_yaml_dryer: "Block 2: YAML für Trockner",
             btn_adv: "⚙️ Erweiterte Einstellungen (Sensoren)",
             hint_preview: "Nur Hintergrund. Daten in Home Assistant.",
             adv_hint: "Verwenden, wenn Sensoren benutzerdefinierte Namen haben. Leer lassen für Automatik."
