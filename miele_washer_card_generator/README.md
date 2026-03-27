@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a22c4227-37e3-49af-b8f7-790fc8e6a5fb" alt="Скриншот 1" width="220">
+  <img src="https://github.com/user-attachments/assets/76a302ed-c2e8-41ba-b26f-980842aead23" alt="Скриншот 1" width="220">
   &nbsp;&nbsp;
   <img src="https://github.com/user-attachments/assets/a22c4227-37e3-49af-b8f7-790fc8e6a5fb" alt="Скриншот 2" width="220">
   &nbsp;&nbsp;
