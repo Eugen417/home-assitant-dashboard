@@ -80,7 +80,7 @@
             font-weight: bold; 
             margin-bottom: 8px; 
         }
-        input[type="text"] { 
+        input[type="text"], select { 
             width: 100%; 
             padding: 12px; 
             border: 1px solid #ccc; 
@@ -229,86 +229,96 @@
     <div class="main-layout">
         <div class="left-col">
             <div class="instructions">
-                <h3 id="ui_instructions_title">Установка:</h3>
+                <h3 id="ui_instructions_title">Установка Custom Card:</h3>
                 <ol>
-                    <li id="ui_step1">Сохраните код из <b>Блока 3</b> в файл <code>config/www/miele/miele-appliance-card.js</code>.</li>
-                    <li id="ui_step2">Добавьте ресурс <code>/local/miele/miele-appliance-card.js</code> как <b>JavaScript Module</b>.</li>
-                    <li id="ui_step3">Загрузите <b>washer.webp</b> и <b>dryer.webp</b> в папку <code>/www/miele/</code>.</li>
+                    <li id="ui_step1">Скопируйте JS код плагина (Блок 3) и сохраните его в файл <code>config/www/miele/miele-appliance-card.js</code>.</li>
+                    <li id="ui_step2">В Home Assistant зайдите в <i>Настройки -> Панели управления -> Ресурсы</i>. Добавьте путь <code>/local/miele/miele-appliance-card.js</code> как <b>Модуль JavaScript</b>.</li>
+                    <li id="ui_step3">Положите картинки вашей техники (<b>washer.webp</b> и <b>dryer.webp</b>) в ту же папку <code>config/www/miele/</code>.</li>
+                    <li id="ui_step4">Очистите кэш браузера (Cmd+Shift+R или Ctrl+F5) и добавьте YAML карточки на дашборд.</li>
                 </ol>
             </div>
 
-            <div class="dual-input">
-                <div class="form-group">
-                    <label id="ui_label_washer_prefix">Префикс Стиралки:</label>
-                    <input type="text" id="prefixWasher" value="stiralnaia_mashina" onkeyup="generateAll()">
-                </div>
-                <div class="form-group">
-                    <label id="ui_label_dryer_prefix">Префикс Сушилки:</label>
-                    <input type="text" id="prefixDryer" value="sushilnaia_mashina" onkeyup="generateAll()">
-                </div>
+            <!-- Разделенные поля ввода для префиксов -->
+            <div class="form-group">
+                <label id="ui_washer_prefix">Префикс Стиральной машины:</label>
+                <input type="text" id="prefixWasher" value="stiralnaia_mashina" onkeyup="generateYAML()">
+            </div>
+            
+            <div class="form-group">
+                <label id="ui_dryer_prefix">Префикс Сушильной машины:</label>
+                <input type="text" id="prefixDryer" value="sushilnaia_mashina" onkeyup="generateYAML()">
             </div>
 
-            <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
-            <div class="advanced-panel" id="advancedPanel">
-                <p style="font-size: 12px; color: #666; margin-bottom: 15px;" id="ui_adv_hint">Используйте, если названия датчиков отличаются от стандартных. Оставьте пустыми для авто-генерации.</p>
-                
-                <div class="adv-section-title">Стиральная машина (Custom Entities):</div>
-                <div class="grid-2-col">
-                    <div><label>Power (switch)</label><input type="text" id="w_adv_power" onkeyup="generateAll()"></div>
-                    <div><label>Door (binary)</label><input type="text" id="w_adv_door" onkeyup="generateAll()"></div>
-                    <div><label>Water (sensor)</label><input type="text" id="w_adv_water" onkeyup="generateAll()"></div>
-                    <div><label>TwinDos 1</label><input type="text" id="w_adv_td1" onkeyup="generateAll()"></div>
-                </div>
+            <div class="form-group">
+                <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
+                <div class="advanced-panel" id="advancedPanel">
+                    <p class="adv-hint" id="ui_adv_hint">Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных. Оставьте пустыми для авто-генерации.</p>
+                    
+                    <div class="adv-section-title" id="ui_adv_washer_title">Стиральная машина:</div>
+                    <div class="grid-2-col">
+                        <div><label>Power (switch)</label><input type="text" id="w_adv_power" onkeyup="generateYAML()"></div>
+                        <div><label>Door (binary)</label><input type="text" id="w_adv_door" onkeyup="generateYAML()"></div>
+                        <div><label>Water (sensor)</label><input type="text" id="w_adv_water" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 1 Level</label><input type="text" id="w_adv_td1" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 2 Level</label><input type="text" id="w_adv_td2" onkeyup="generateYAML()"></div>
+                        <div><label>Energy (sensor)</label><input type="text" id="w_adv_energy" onkeyup="generateYAML()"></div>
+                    </div>
 
-                <div class="adv-section-title">Сушильная машина (Custom Entities):</div>
-                <div class="grid-2-col">
-                    <div><label>Power (switch)</label><input type="text" id="d_adv_power" onkeyup="generateAll()"></div>
-                    <div><label>Door (binary)</label><input type="text" id="d_adv_door" onkeyup="generateAll()"></div>
-                    <div><label>Drying Step</label><input type="text" id="d_adv_drying" onkeyup="generateAll()"></div>
-                    <div><label>Problem (binary)</label><input type="text" id="d_adv_problem" onkeyup="generateAll()"></div>
+                    <div class="adv-section-title" id="ui_adv_dryer_title">Сушильная машина:</div>
+                    <div class="grid-2-col">
+                        <div><label>Power (switch)</label><input type="text" id="d_adv_power" onkeyup="generateYAML()"></div>
+                        <div><label>Door (binary)</label><input type="text" id="d_adv_door" onkeyup="generateYAML()"></div>
+                        <div><label>Drying Step</label><input type="text" id="d_adv_drying" onkeyup="generateYAML()"></div>
+                        <div><label>Problem (binary)</label><input type="text" id="d_adv_problem" onkeyup="generateYAML()"></div>
+                        <div><label>Energy (sensor)</label><input type="text" id="d_adv_energy" onkeyup="generateYAML()"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="right-col">
             <div class="preview-box">
-                <select id="previewType" onchange="updatePreviewImg()" style="margin-bottom: 10px; width: 100%; padding: 8px; border-radius: 4px;">
-                    <option value="washer">Превью: Стиралка</option>
-                    <option value="dryer">Превью: Сушилка</option>
+                <h3 id="ui_preview_title">Статичное превью фона:</h3>
+                <select id="previewType" onchange="updatePreviewImg()" style="margin-bottom: 15px;">
+                    <option value="washer" id="ui_preview_opt_washer">Превью фона: Стиралка</option>
+                    <option value="dryer" id="ui_preview_opt_dryer">Превью фона: Сушилка</option>
                 </select>
-                <img id="previewImg" src="washer.webp" class="preview-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZWVlIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+'">
-                <p class="preview-hint" id="ui_preview_hint">Это статичный фон. Кольцо прогресса и данные появятся в Home Assistant.</p>
+                <img id="previewImg" src="washer.webp" alt="Miele Appliance" class="preview-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZWVlIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+'">
+                <div class="preview-hint" id="ui_preview_hint">
+                    Внимание! Здесь показан только пустой фон картинки. Все данные генерируются автоматически кодом плагина внутри Home Assistant.
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- YAML OUTPUTS -->
+    <!-- Два независимых вывода YAML -->
     <div class="output-group">
         <div class="output-header">
-            <label id="ui_label_yaml_washer">Блок 1: YAML для Стиральной машины</label>
-            <button class="copy-btn" onclick="copyToClipboard('yamlWasher', this)">📋 Copy</button>
+            <label id="ui_yaml_washer_label">Блок 1: YAML для Стиральной машины (Дашборд)</label>
+            <button class="copy-btn" id="ui_btn_copy_yaml_w" onclick="copyToClipboard('yamlWasher', this)">📋 Copy YAML</button>
         </div>
-        <textarea id="yamlWasher" rows="7" readonly></textarea>
+        <textarea id="yamlWasher" rows="6" readonly></textarea>
     </div>
 
     <div class="output-group">
         <div class="output-header">
-            <label id="ui_label_yaml_dryer">Блок 2: YAML для Сушильной машины</label>
-            <button class="copy-btn" onclick="copyToClipboard('yamlDryer', this)">📋 Copy</button>
+            <label id="ui_yaml_dryer_label">Блок 2: YAML для Сушильной машины (Дашборд)</label>
+            <button class="copy-btn" id="ui_btn_copy_yaml_d" onclick="copyToClipboard('yamlDryer', this)">📋 Copy YAML</button>
         </div>
-        <textarea id="yamlDryer" rows="7" readonly></textarea>
+        <textarea id="yamlDryer" rows="6" readonly></textarea>
     </div>
 
-    <!-- JS CODE -->
     <div class="output-group">
         <div class="output-header">
-            <label>Блок 3: Код плагина (miele-appliance-card.js)</label>
-            <button class="copy-btn" onclick="copyToClipboard('jsOutput', this)">📋 Copy JS</button>
+            <label id="ui_js_label">Блок 3: Код плагина (miele-appliance-card.js)</label>
+            <button class="copy-btn" id="ui_btn_copy_js" onclick="copyToClipboard('jsOutput', this)">📋 Copy JS</button>
         </div>
-        <textarea id="jsOutput" rows="20" readonly></textarea>
+        <textarea id="jsOutput" rows="15" readonly></textarea>
     </div>
     
-    <div class="footer">Developed by <a href="https://github.com/Eugen417" target="_blank">Eugen417</a></div>
+    <div class="footer" id="ui_footer">
+        Разработано <a href="https://github.com/Eugen417" target="_blank">Eugen417</a> для техники Miele
+    </div>
 </div>
 
 <script>
@@ -347,7 +357,28 @@
         'phase1': 'ФАЗА 1',
         'phase2': 'ФАЗА 2',
         'clean_filter': 'Очистите фильтр!',
-        'min': 'мин'
+        'min': 'мин',
+        'silks_handcare': 'Шелк (ручная)',
+        'downs_duvets': 'Пуховики',
+        'eco': 'Эко',
+        'express': 'Экспресс',
+        'gentle_denim': 'Джинсы (бережная)',
+        'gentle_smoothing': 'Бережное разгл.',
+        'large_pillows': 'Большие подушки',
+        'pillows_sanitize': 'Подушки (гигиена)',
+        'quick_hygiene': 'Быстрая гигиена',
+        'quick_power_dry': 'QuickPowerDry',
+        'standard_pillows': 'Станд. подушки',
+        'woollens_handcare': 'Шерсть (ручная)',
+        'automatic': 'Автоматическая',
+        'basket_program': 'Сушка в корзине',
+        'automatic_start': 'Автостарт',
+        'flex_load_active': 'FlexLoad активен',
+        'rinse_hold': 'Остановка с водой',
+        'idle': 'Ожидание',
+        'program_interrupted': 'Прервана',
+        'waiting_to_start': 'Ожидание старта',
+        'not_connected': 'Отключена'
       },
       'en': {
         'extra_dry': 'Extra dry',
@@ -379,7 +410,28 @@
         'phase1': 'PHASE 1',
         'phase2': 'PHASE 2',
         'clean_filter': 'Clean filter!',
-        'min': 'min'
+        'min': 'min',
+        'silks_handcare': 'Silks handcare',
+        'downs_duvets': 'Downs duvets',
+        'eco': 'Eco',
+        'express': 'Express',
+        'gentle_denim': 'Gentle denim',
+        'gentle_smoothing': 'Gentle smoothing',
+        'large_pillows': 'Large pillows',
+        'pillows_sanitize': 'Pillows sanitize',
+        'quick_hygiene': 'Quick hygiene',
+        'quick_power_dry': 'Quick Power Dry',
+        'standard_pillows': 'Standard pillows',
+        'woollens_handcare': 'Woollens handcare',
+        'automatic': 'Automatic',
+        'basket_program': 'Basket program',
+        'automatic_start': 'Auto start',
+        'flex_load_active': 'FlexLoad active',
+        'rinse_hold': 'Rinse hold',
+        'idle': 'Idle',
+        'program_interrupted': 'Interrupted',
+        'waiting_to_start': 'Waiting to start',
+        'not_connected': 'Not connected'
       },
       'de': {
         'extra_dry': 'Extratrocken',
@@ -411,7 +463,28 @@
         'phase1': 'PHASE 1',
         'phase2': 'PHASE 2',
         'clean_filter': 'Filter reinigen!',
-        'min': 'min'
+        'min': 'min',
+        'silks_handcare': 'Seide Handpflege',
+        'downs_duvets': 'Daunendecken',
+        'eco': 'Eco',
+        'express': 'Express',
+        'gentle_denim': 'Jeans schonend',
+        'gentle_smoothing': 'Schonglätten',
+        'large_pillows': 'Große Kissen',
+        'pillows_sanitize': 'Kissen Hygiene',
+        'quick_hygiene': 'Schnelle Hygiene',
+        'quick_power_dry': 'QuickPowerDry',
+        'standard_pillows': 'Standardkissen',
+        'woollens_handcare': 'Wolle Handpflege',
+        'automatic': 'Automatic',
+        'basket_program': 'Korbprogramm',
+        'automatic_start': 'Autostart',
+        'flex_load_active': 'FlexLoad aktiv',
+        'rinse_hold': 'Spülstopp',
+        'idle': 'Leerlauf',
+        'program_interrupted': 'Unterbrochen',
+        'waiting_to_start': 'Wartet auf Start',
+        'not_connected': 'Nicht verbunden'
       }
     };
   }
@@ -492,6 +565,7 @@
         .progress-ring { position: absolute; top: 43%; left: 50%; width: 55%; height: 55%; transform: translate(-50%, -50%) rotate(-90deg); pointer-events: none; }
         .ring-bg { fill: none; stroke: rgba(150, 150, 150, 0.4); stroke-width: 6; }
         .ring-fg { fill: none; stroke: #ff8c00; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+        .twindos-container { display: block; }
         .twindos { position: absolute; height: 14%; width: 20%; border-radius: 6px; overflow: hidden; background: rgba(140, 140, 140, 0.4); border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
         .twindos-1 { top: 79%; left: 47%; }
         .twindos-2 { top: 79%; left: 73%; }
@@ -569,7 +643,16 @@
     const s = (e) => this._hass.states[e]?.state; 
     const inv = (v) => v === undefined || v === null || v === '' || v === 'unknown' || v === 'unavailable';
     const main = s(this.entities.base); 
-    if (main === undefined) return;
+    if (main === undefined) {
+      this.setText('.program-name', 'Сенсор не найден');
+      this.shadowRoot.querySelector('.program-name').style.display = 'block';
+      this.shadowRoot.querySelector('.program-phase').style.display = 'none';
+      this.shadowRoot.querySelector('.spin-speed').style.display = 'none';
+      this.shadowRoot.querySelector('.drying-step').style.display = 'none';
+      this.shadowRoot.querySelector('.progress-ring').style.display = 'none';
+      if (this.shadowRoot.querySelector('.btn-power')) { this.shadowRoot.querySelector('.btn-power').style.color = '#ff0000'; }
+      return;
+    }
     
     const pwr = s(this.entities.power); 
     const isD = this.config.appliance_type === 'dryer'; 
@@ -596,7 +679,8 @@
     if (isD) {
       this.shadowRoot.querySelector('.water-container').style.display = 'none'; 
       this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
-      const prob = s(this.entities.problem) === 'on' || s(this.entities.notification) === 'on';
+      // Оставили только problem для срабатывания предупреждения, убрали notification_active
+      const prob = s(this.entities.problem) === 'on';
       this.shadowRoot.querySelector('.filter-alert').style.display = (on && prob) ? 'flex' : 'none';
       this.shadowRoot.getElementById('fltr-txt').innerText = this.translations[lang]['clean_filter'];
     } else {
@@ -605,6 +689,9 @@
       if (wE) { 
         this.shadowRoot.querySelector('.water-icon').style.display = 'block'; 
         this.setText('.water-val', inv(wE.state) ? '-' : \`\${wE.state} L\`); 
+      } else {
+        this.shadowRoot.querySelector('.water-icon').style.display = 'none';
+        this.setText('.water-val', '');
       }
       const t1 = s(this.entities.td1); 
       if (!this._hass.states[this.entities.td1]) {
@@ -619,11 +706,17 @@
         this.setText('.twindos-2 .twindos-val', inv(t2) ? '-' : \`\${parseFloat(t2) || 0}%\`); 
         this.shadowRoot.querySelector('.twindos-2 .twindos-fill').style.height = inv(t2) ? '0%' : \`\${parseFloat(t2) || 0}%\`;
       }
+      this.shadowRoot.querySelector('.filter-alert').style.display = 'none';
     }
     const eE = this._hass.states[this.entities.energy]; 
     if (eE) { 
         this.shadowRoot.querySelector('.energy-icon').style.display = 'block'; 
-        this.setText('.energy-val', inv(eE.state) ? '-' : \`\${eE.state} kWh\`); 
+        // Автоматически берем единицу измерения (чтобы % работал так же, как kWh)
+        const uom = eE.attributes?.unit_of_measurement || 'kWh';
+        this.setText('.energy-val', inv(eE.state) ? '-' : \`\${eE.state} \${uom}\`); 
+    } else {
+        this.shadowRoot.querySelector('.energy-icon').style.display = 'none';
+        this.setText('.energy-val', '');
     }
     const door = s(this.entities.door); 
     const lock = this.shadowRoot.querySelector('.door-lock'); 
@@ -672,63 +765,129 @@ customElements.define('miele-appliance-card', MieleApplianceCard);
 window.customCards = window.customCards || [];
 window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance Card", preview: false, description: "Мультиязычная карточка для техники Miele" });`;
 
-    const translations = {
+    const uiTranslations = {
         ru: {
-            title: "Miele Card Generator V3.1",
-            label_washer_prefix: "Префикс Стиралки:",
-            label_dryer_prefix: "Префикс Сушилки:",
-            label_yaml_washer: "Блок 1: YAML для Стиральной машины",
-            label_yaml_dryer: "Блок 2: YAML для Сушильной машины",
-            btn_adv: "⚙️ Продвинутые настройки (Сенсоры)",
-            hint_preview: "Это только фон. Данные появятся в Home Assistant.",
-            adv_hint: "Используйте, если названия датчиков отличаются от стандартных. Оставьте пустыми для авто-генерации."
+            title: "Генератор карточки Miele (Home Assistant)",
+            instructions_title: "Установка Custom Card:",
+            step1: "Скопируйте JS код плагина (Блок 3) и сохраните его в файл <code>config/www/miele/miele-appliance-card.js</code>.",
+            step2: "В Home Assistant зайдите в <i>Настройки -> Панели управления -> Ресурсы</i>. Добавьте путь <code>/local/miele/miele-appliance-card.js</code> как <b>Модуль JavaScript</b>.",
+            step3: "Положите картинки вашей техники (<b>washer.webp</b> и <b>dryer.webp</b>) в ту же папку <code>config/www/miele/</code>.",
+            step4: "Очистите кэш браузера (Cmd+Shift+R или Ctrl+F5) и добавьте YAML карточки на дашборд.",
+            washer_prefix: "Префикс Стиральной машины:",
+            dryer_prefix: "Префикс Сушильной машины:",
+            preview_title: "Статичное превью фона:",
+            preview_opt_washer: "Превью фона: Стиралка",
+            preview_opt_dryer: "Превью фона: Сушилка",
+            preview_hint: "Внимание! Здесь показан только пустой фон картинки. Все данные генерируются автоматически кодом плагина внутри Home Assistant.",
+            yaml_washer_label: "Блок 1: YAML для Стиральной машины (Дашборд)",
+            yaml_dryer_label: "Блок 2: YAML для Сушильной машины (Дашборд)",
+            btn_copy_yaml_w: "📋 Copy YAML",
+            btn_copy_yaml_d: "📋 Copy YAML",
+            js_label: "Блок 3: Код плагина (miele-appliance-card.js)",
+            btn_copy_js: "📋 Copy JS",
+            btn_copied: "✅ Скопировано!",
+            adv_btn: "⚙️ Продвинутые настройки (Сенсоры)",
+            adv_hint: "Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных. Оставьте пустыми для авто-генерации.",
+            adv_washer_title: "Стиральная машина (Custom Entities):",
+            adv_dryer_title: "Сушильная машина (Custom Entities):"
         },
         en: {
-            title: "Miele Card Generator V3.1",
-            label_washer_prefix: "Washer Prefix:",
-            label_dryer_prefix: "Dryer Prefix:",
-            label_yaml_washer: "Block 1: YAML for Washing Machine",
-            label_yaml_dryer: "Block 2: YAML for Tumble Dryer",
-            btn_adv: "⚙️ Advanced Settings (Sensors)",
-            hint_preview: "Background only. Real data in Home Assistant.",
-            adv_hint: "Use if your sensors have custom names. Leave blank for auto-generation."
+            title: "Miele Custom Card Generator (Home Assistant)",
+            instructions_title: "Custom Card Installation:",
+            step1: "Copy the JS plugin code (Block 3) and save it to <code>config/www/miele/miele-appliance-card.js</code>.",
+            step2: "In Home Assistant, go to <i>Settings -> Dashboards -> Resources</i>. Add <code>/local/miele/miele-appliance-card.js</code> as a <b>JavaScript Module</b>.",
+            step3: "Upload your appliance images (<b>washer.webp</b> and <b>dryer.webp</b>) into the same <code>config/www/miele/</code> folder.",
+            step4: "Clear browser cache (Cmd+Shift+R or Ctrl+F5) and add the YAML card to your dashboard.",
+            washer_prefix: "Washer Entity Prefix:",
+            dryer_prefix: "Dryer Entity Prefix:",
+            preview_title: "Static Background Preview:",
+            preview_opt_washer: "Preview: Washer",
+            preview_opt_dryer: "Preview: Dryer",
+            preview_hint: "Note: This is just a blank background. All labels, statuses, progress rings, and TwinDos levels are dynamically rendered by the code inside Home Assistant.",
+            yaml_washer_label: "Block 1: Dashboard YAML (Washer)",
+            yaml_dryer_label: "Block 2: Dashboard YAML (Dryer)",
+            btn_copy_yaml_w: "📋 Copy YAML",
+            btn_copy_yaml_d: "📋 Copy YAML",
+            js_label: "Block 3: Plugin Code (miele-appliance-card.js)",
+            btn_copy_js: "📋 Copy JS Code",
+            btn_copied: "✅ Copied!",
+            adv_btn: "⚙️ Advanced Settings (Sensors)",
+            adv_hint: "Fill these fields ONLY if your sensor names differ from the default ones generated by the integration. Leave blank for auto-generation.",
+            adv_washer_title: "Washer (Custom Entities):",
+            adv_dryer_title: "Dryer (Custom Entities):"
         },
         de: {
-            title: "Miele Card Generator V3.1",
-            label_washer_prefix: "Waschmaschine Präfix:",
-            label_dryer_prefix: "Trockner Präfix:",
-            label_yaml_washer: "Block 1: YAML für Waschmaschine",
-            label_yaml_dryer: "Block 2: YAML für Trockner",
-            btn_adv: "⚙️ Erweiterte Einstellungen (Sensoren)",
-            hint_preview: "Nur Hintergrund. Daten in Home Assistant.",
-            adv_hint: "Verwenden, wenn Sensoren benutzerdefinierte Namen haben. Leer lassen für Automatik."
+            title: "Miele Custom Card Generator (Home Assistant)",
+            instructions_title: "Custom Card Installation:",
+            step1: "Kopieren Sie den JS-Code (Block 3) und speichern Sie ihn unter <code>config/www/miele/miele-appliance-card.js</code>.",
+            step2: "Gehen Sie in Home Assistant zu <i>Einstellungen -> Dashboards -> Ressourcen</i>. Fügen Sie <code>/local/miele/miele-appliance-card.js</code> als <b>JavaScript-Modul</b> hinzu.",
+            step3: "Laden Sie Ihre Gerätebilder (<b>washer.webp</b> und <b>dryer.webp</b>) in denselben Ordner <code>config/www/miele/</code> hoch.",
+            step4: "Leeren Sie den Browser-Cache (Cmd+Shift+R) und fügen Sie die YAML-Karte zu Ihrem Dashboard hinzu.",
+            washer_prefix: "Waschmaschine Präfix:",
+            dryer_prefix: "Trockner Präfix:",
+            preview_title: "Statische Hintergrundvorschau:",
+            preview_opt_washer: "Vorschau: Waschmaschine",
+            preview_opt_dryer: "Vorschau: Trockner",
+            preview_hint: "Achtung: Dies zeigt nur den leeren Hintergrund. Alle Beschriftungen, der Fortschrittsring und TwinDos werden in Home Assistant dynamisch gerendert.",
+            yaml_washer_label: "Block 1: Dashboard YAML (Waschmaschine)",
+            yaml_dryer_label: "Block 2: Dashboard YAML (Trockner)",
+            btn_copy_yaml_w: "📋 YAML kopieren",
+            btn_copy_yaml_d: "📋 YAML kopieren",
+            js_label: "Block 3: Plugin-Code (miele-appliance-card.js)",
+            btn_copy_js: "📋 JS kopieren",
+            btn_copied: "✅ Kopiert!",
+            adv_btn: "⚙️ Erweiterte Einstellungen (Sensoren)",
+            adv_hint: "Füllen Sie diese Felder NUR aus, wenn Ihre Sensornamen von den Standardwerten der Integration abweichen. Für die automatische Generierung leer lassen.",
+            adv_washer_title: "Waschmaschine (Custom Entities):",
+            adv_dryer_title: "Trockner (Custom Entities):"
         }
     };
 
-    let selectedLang = 'ru';
+    let currentLang = 'ru';
 
     function changeLang(lang) {
-        selectedLang = lang;
-        document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
-        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-        document.getElementById('btn-de').classList.toggle('active', lang === 'de');
-        
-        const t = translations[lang];
+        currentLang = lang;
+        const t = uiTranslations[lang];
+
+        document.getElementById('btn-ru').classList.remove('active');
+        document.getElementById('btn-en').classList.remove('active');
+        document.getElementById('btn-de').classList.remove('active');
+        document.getElementById('btn-' + lang).classList.add('active');
+
         document.getElementById('ui_title').innerText = t.title;
-        document.getElementById('ui_label_washer_prefix').innerText = t.label_washer_prefix;
-        document.getElementById('ui_label_dryer_prefix').innerText = t.label_dryer_prefix;
-        document.getElementById('ui_label_yaml_washer').innerText = t.label_yaml_washer;
-        document.getElementById('ui_label_yaml_dryer').innerText = t.label_yaml_dryer;
-        document.getElementById('ui_adv_btn').innerText = t.btn_adv;
-        document.getElementById('ui_preview_hint').innerText = t.hint_preview;
-        document.getElementById('ui_adv_hint').innerText = t.adv_hint;
+        document.getElementById('ui_instructions_title').innerText = t.instructions_title;
+        document.getElementById('ui_step1').innerHTML = t.step1;
+        document.getElementById('ui_step2').innerHTML = t.step2;
+        document.getElementById('ui_step3').innerHTML = t.step3;
+        document.getElementById('ui_step4').innerHTML = t.step4;
         
-        generateAll();
+        document.getElementById('ui_washer_prefix').innerText = t.washer_prefix;
+        document.getElementById('ui_dryer_prefix').innerText = t.dryer_prefix;
+        
+        document.getElementById('ui_preview_title').innerText = t.preview_title;
+        document.getElementById('ui_preview_opt_washer').innerText = t.preview_opt_washer;
+        document.getElementById('ui_preview_opt_dryer').innerText = t.preview_opt_dryer;
+        document.getElementById('ui_preview_hint').innerText = t.preview_hint;
+        
+        document.getElementById('ui_yaml_washer_label').innerText = t.yaml_washer_label;
+        document.getElementById('ui_yaml_dryer_label').innerText = t.yaml_dryer_label;
+        document.getElementById('ui_btn_copy_yaml_w').innerText = t.btn_copy_yaml_w;
+        document.getElementById('ui_btn_copy_yaml_d').innerText = t.btn_copy_yaml_d;
+        
+        document.getElementById('ui_js_label').innerText = t.js_label;
+        document.getElementById('ui_btn_copy_js').innerText = t.btn_copy_js;
+        
+        document.getElementById('ui_adv_btn').innerText = t.adv_btn;
+        document.getElementById('ui_adv_hint').innerText = t.adv_hint;
+        document.getElementById('ui_adv_washer_title').innerText = t.adv_washer_title;
+        document.getElementById('ui_adv_dryer_title').innerText = t.adv_dryer_title;
+
+        generateYAML();
     }
 
     function toggleAdvanced() {
-        const p = document.getElementById("advancedPanel");
-        p.style.display = p.style.display === "block" ? "none" : "block";
+        const panel = document.getElementById("advancedPanel");
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
     }
 
     function updatePreviewImg() {
@@ -736,47 +895,61 @@ window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance C
         document.getElementById("previewImg").src = type === 'washer' ? 'washer.webp' : 'dryer.webp';
     }
 
-    function generateAll() {
-        const wPrefix = document.getElementById("prefixWasher").value.trim() || "washer";
-        const dPrefix = document.getElementById("prefixDryer").value.trim() || "dryer";
+    function generateYAML() {
+        let wPrefix = document.getElementById("prefixWasher").value.trim() || "washer";
+        let dPrefix = document.getElementById("prefixDryer").value.trim() || "dryer";
 
-        // Washer YAML
-        let wYaml = `type: custom:miele-appliance-card\nentity: sensor.${wPrefix}\nappliance_type: washer\nlang: ${selectedLang}\nimage: /local/miele/washer.webp`;
+        let wYaml = `type: custom:miele-appliance-card\nentity: sensor.${wPrefix}\nappliance_type: washer\nlang: ${currentLang}\nimage: /local/miele/washer.webp`;
         const wAdv = [
-            { id: 'w_adv_power', k: 'power_entity' }, { id: 'w_adv_door', k: 'door_entity' },
-            { id: 'w_adv_water', k: 'water_entity' }, { id: 'w_adv_td1', k: 'td1_entity' }
+            { id: 'w_adv_power', k: 'power_entity' },
+            { id: 'w_adv_door', k: 'door_entity' },
+            { id: 'w_adv_water', k: 'water_entity' },
+            { id: 'w_adv_td1', k: 'td1_entity' },
+            { id: 'w_adv_td2', k: 'td2_entity' },
+            { id: 'w_adv_energy', k: 'energy_entity' }
         ];
-        wAdv.forEach(i => { 
-            const val = document.getElementById(i.id).value.trim();
-            if(val) wYaml += `\n${i.k}: ${val}`; 
+        wAdv.forEach(item => {
+            let val = document.getElementById(item.id).value.trim();
+            if (val) wYaml += `\n${item.k}: ${val}`;
         });
         document.getElementById("yamlWasher").value = wYaml;
 
-        // Dryer YAML
-        let dYaml = `type: custom:miele-appliance-card\nentity: sensor.${dPrefix}\nappliance_type: dryer\nlang: ${selectedLang}\nimage: /local/miele/dryer.webp`;
+        let dYaml = `type: custom:miele-appliance-card\nentity: sensor.${dPrefix}\nappliance_type: dryer\nlang: ${currentLang}\nimage: /local/miele/dryer.webp`;
         const dAdv = [
-            { id: 'd_adv_power', k: 'power_entity' }, { id: 'd_adv_door', k: 'door_entity' },
-            { id: 'd_adv_drying', k: 'drying_step_entity' }, { id: 'd_adv_problem', k: 'problem_entity' }
+            { id: 'd_adv_power', k: 'power_entity' },
+            { id: 'd_adv_door', k: 'door_entity' },
+            { id: 'd_adv_drying', k: 'drying_step_entity' },
+            { id: 'd_adv_problem', k: 'problem_entity' },
+            { id: 'd_adv_energy', k: 'energy_entity' }
         ];
-        dAdv.forEach(i => { 
-            const val = document.getElementById(i.id).value.trim();
-            if(val) dYaml += `\n${i.k}: ${val}`; 
+        dAdv.forEach(item => {
+            let val = document.getElementById(item.id).value.trim();
+            if (val) dYaml += `\n${item.k}: ${val}`;
         });
         document.getElementById("yamlDryer").value = dYaml;
     }
 
-    function copyToClipboard(id, btn) {
-        document.getElementById(id).select();
+    function copyToClipboard(elementId, btn) {
+        let textarea = document.getElementById(elementId);
+        textarea.select();
         document.execCommand("copy");
-        const oldText = btn.innerText;
-        btn.innerText = "✅ Done!";
-        setTimeout(() => btn.innerText = oldText, 2000);
+        
+        let originalText = btn.innerText;
+        btn.innerText = uiTranslations[currentLang].btn_copied;
+        btn.style.backgroundColor = "#2e7d32";
+        
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.backgroundColor = "#4caf50";
+        }, 2000);
     }
 
-    window.onload = () => {
+    window.onload = function() {
         document.getElementById("jsOutput").value = pluginCode;
         changeLang('ru');
+        updatePreviewImg();
     };
 </script>
+
 </body>
 </html>
