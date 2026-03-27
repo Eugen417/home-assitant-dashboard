@@ -13,13 +13,11 @@ An interactive custom card for Miele washing and drying machines (W1/T1 models) 
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/692fc4a2-0797-4759-b871-1422a7d74700" alt="Screenshot 1" width="220">
+  <img src="https://github.com/user-attachments/assets/76a302ed-c2e8-41ba-b26f-980842aead23" alt="Скриншот 1" width="220">
   &nbsp;&nbsp;
-  <img src="https://github.com/user-attachments/assets/e58f489b-fff7-48b1-8b67-80f270303b09" alt="Screenshot 2" width="220">
+  <img src="https://github.com/user-attachments/assets/a22c4227-37e3-49af-b8f7-790fc8e6a5fb" alt="Скриншот 2" width="220">
   &nbsp;&nbsp;
-  <img src="https://github.com/user-attachments/assets/adb5381b-1403-4a35-922a-0caf50d287c0" alt="Screenshot 3" width="220">
-  &nbsp;&nbsp;
-  <img src="https://github.com/user-attachments/assets/d49a0c81-8f27-4cc4-88b3-5069e90e383f" alt="Dryer screenshot" width="220">
+  <img src="https://github.com/user-attachments/assets/efb25895-ed82-49e3-8593-345f7e77e5e3" alt="Скриншот 3" width="220">
 </p>
 
 ## ✨ Features
