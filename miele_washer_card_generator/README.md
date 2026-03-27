@@ -12,10 +12,9 @@
 </p>
 
 ## 📸 Галерея
+<img width="1170" height="802" alt="Снимок экрана 2026-03-27 в 15 51 47" src="https://github.com/user-attachments/assets/b85d3631-dce2-4e17-916b-4466e61a9223" />
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/8e72f698-32e8-4009-a9a2-58659ae3cd75" alt="Общий вид" width="800">
-</p>
+
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/692fc4a2-0797-4759-b871-1422a7d74700" alt="Скриншот 1" width="250">
