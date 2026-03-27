@@ -121,6 +121,50 @@
             line-height: 1.4;
         }
 
+        /* Advanced Settings Styles */
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #03a9f4;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-btn:hover {
+            text-decoration: underline;
+        }
+        .advanced-panel {
+            display: none;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        .adv-hint {
+            font-size: 13px;
+            color: #666;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .grid-2-col label {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        .grid-2-col input {
+            padding: 8px;
+            font-size: 13px;
+        }
+
         .output-group {
             margin-top: 30px;
             width: 100%;
@@ -168,9 +212,6 @@
             text-decoration: none;
             font-weight: bold;
         }
-        .footer a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -211,6 +252,29 @@
                 </p>
                 <input type="text" id="entityId" value="stiralnaia_mashina" onkeyup="generateYAML()">
             </div>
+
+            <div class="form-group">
+                <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
+                <div class="advanced-panel" id="advancedPanel">
+                    <p class="adv-hint" id="ui_adv_hint">Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных. Оставьте пустыми для авто-генерации.</p>
+                    <div class="grid-2-col">
+                        <div><label>Power (Вкл/Выкл):</label><input type="text" id="adv_power" placeholder="switch.washer_power" onkeyup="generateYAML()"></div>
+                        <div><label>Door (Дверца):</label><input type="text" id="adv_door" placeholder="binary_sensor.washer_door" onkeyup="generateYAML()"></div>
+                        <div><label>Program (Программа):</label><input type="text" id="adv_program" placeholder="sensor.washer_program" onkeyup="generateYAML()"></div>
+                        <div><label>Phase (Фаза):</label><input type="text" id="adv_phase" placeholder="sensor.washer_program_phase" onkeyup="generateYAML()"></div>
+                        <div><label>Time Remaining:</label><input type="text" id="adv_remain" placeholder="sensor.washer_remaining_time" onkeyup="generateYAML()"></div>
+                        <div><label>Time Elapsed:</label><input type="text" id="adv_elapsed" placeholder="sensor.washer_elapsed_time" onkeyup="generateYAML()"></div>
+                        <div><label>Spin Speed:</label><input type="text" id="adv_speed" placeholder="sensor.washer_spin_speed" onkeyup="generateYAML()"></div>
+                        <div><label>Drying Step:</label><input type="text" id="adv_drying" placeholder="sensor.washer_drying_step" onkeyup="generateYAML()"></div>
+                        <div><label>Water Consumed:</label><input type="text" id="adv_water" placeholder="sensor.washer_water_consumption" onkeyup="generateYAML()"></div>
+                        <div><label>Energy Consumed:</label><input type="text" id="adv_energy" placeholder="sensor.washer_energy_consumption" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 1 Level:</label><input type="text" id="adv_td1" placeholder="sensor.washer_twindos_1_level" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 2 Level:</label><input type="text" id="adv_td2" placeholder="sensor.washer_twindos_2_level" onkeyup="generateYAML()"></div>
+                        <div><label>Start Button:</label><input type="text" id="adv_start" placeholder="button.washer_start" onkeyup="generateYAML()"></div>
+                        <div><label>Stop Button:</label><input type="text" id="adv_stop" placeholder="button.washer_stop" onkeyup="generateYAML()"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="right-col">
@@ -224,14 +288,12 @@
         </div>
     </div>
 
-    <!-- БЛОК 2: YAML ДЛЯ ДАШБОРДА -->
     <div class="output-group">
         <label id="ui_yaml_label">Блок 2: Код карточки для Дашборда (Вручную / Manual):</label>
-        <textarea id="yamlOutput" rows="6" readonly></textarea>
+        <textarea id="yamlOutput" rows="8" readonly></textarea>
         <button class="copy-btn" id="ui_btn_copy_yaml" onclick="copyToClipboard('yamlOutput', this)">📋 Скопировать YAML</button>
     </div>
 
-    <!-- БЛОК 1: JS КОД ПЛАГИНА -->
     <div class="output-group">
         <label id="ui_js_label">Блок 1: Код плагина (Сохраните в miele-appliance-card.js):</label>
         <textarea id="jsOutput" rows="15" readonly></textarea>
@@ -252,98 +314,28 @@
 
     // Встроенный словарь переводов для программ и фаз Miele
     this.translations = {
-      // Этапы сушки (Drying steps)
-      'extra_dry': 'Экстра сухая',
-      'hand_iron_1': 'Под утюг 1',
-      'hand_iron_2': 'Под утюг 2',
-      'machine_iron': 'В гладилку',
-      'normal': 'Нормальная',
-      'normal_plus': 'Нормальная плюс',
-      'slightly_dry': 'Слегка влажная',
-      'smoothing': 'Разглаживание',
-      
-      // Фазы программы
-      'not_running': 'Остановлена',
-      'pre_wash': 'Предв. стирка',
-      'main_wash': 'Основная стирка',
-      'rinse': 'Полоскание',
-      'spin': 'Отжим',
-      'drain': 'Слив',
-      'anti_crease': 'Защита от сминания',
-      'cooling_down': 'Охлаждение',
-      'drying': 'Сушка',
-      'finished': 'Завершено',
-      'cleaning': 'Очистка',
-      'comfort_cooling': 'Охлаждение (комфорт)',
-      'disinfecting': 'Дезинфекция',
-      'freshen_up_and_moisten': 'Освежить и увлажнить',
-      'hand_iron': 'Под утюг',
-      'hygiene': 'Гигиена',
-      'moisten': 'Увлажнение',
-      'program_running': 'В процессе',
-      'rinses': 'Полоскания',
-      'safety_cooling': 'Безопасное охлаждение',
-      'soak': 'Замачивание',
-      'starch_stop': 'Остановка (крахмал)',
-      'steam_smoothing': 'Разглаживание паром',
-      'thermo_spin': 'Термоотжим',
-      'timed_drying': 'Сушка по времени',
-      'venting': 'Вентиляция',
-      
-      // Программы стирки и сушки
-      'automatic_plus': 'Автоматическая+',
-      'bed_linen': 'Постельное белье',
-      'cool_air': 'Холодный обдув',
-      'warm_air': 'Теплый обдув',
-      'cottonrepair': 'Восстановление хлопка',
-      'cottons_eco': 'Хлопок Эко',
-      'curtains': 'Шторы',
-      'dark_jeans': 'Темные джинсы',
-      'down_filled_items': 'Пуховики',
-      'easy_care': 'Тонкое белье',
-      'first_wash': 'Первая стирка',
-      'freshen_up': 'Освежить',
-      'game_pieces': 'Спортивная экипировка',
-      'outdoor_garments': 'Верхняя одежда',
-      'powerfresh': 'PowerFresh',
-      'pre_ironing': 'Предварительная глажка',
-      'quick_power_wash': 'QuickPowerWash',
-      'rinse_out_lint': 'Смыв ворса',
-      'separate_rinse_starch': 'Полоскание/Крахмал',
-      'smartmatic': 'SmartMatic',
-      'starch': 'Крахмал',
-      'steam_care': 'Обработка паром',
-      'stuffed_toys': 'Мягкие игрушки',
-      'trainers_refresh': 'Освежить кроссовки',
-      'no_program': 'Нет программы',
-      'delicates': 'Деликатная',
-      'cottons': 'Хлопок',
-      'minimum_iron': 'Легкая глажка',
-      'woollens': 'Шерсть',
-      'silks': 'Шелк',
-      'shirts': 'Рубашки',
-      'express_20': 'Экспресс 20',
-      'dark_garments': 'Темные вещи',
-      'denim': 'Джинсы',
-      'outerwear': 'Верхняя одежда',
-      'proofing': 'Пропитка',
-      'sportswear': 'Спортивная',
-      'trainers': 'Кроссовки',
-      'down_duvets': 'Пуховики',
-      'pillows': 'Подушки',
-      'cottons_hygiene': 'Хлопок Гигиена',
-      'eco_40_60': 'Eco 40-60',
-      'drain_spin': 'Слив / Отжим',
-      'clean_machine': 'Очистка машины',
-      
-      // Общие статусы
-      'off': 'Выкл',
-      'on': 'Вкл',
-      'in_use': 'В работе',
-      'programmed': 'Запрограммировано',
-      'pause': 'Пауза',
-      'program_ended': 'Завершено',
-      'failure': 'Ошибка'
+      'extra_dry': 'Экстра сухая', 'hand_iron_1': 'Под утюг 1', 'hand_iron_2': 'Под утюг 2', 'machine_iron': 'В гладилку',
+      'normal': 'Нормальная', 'normal_plus': 'Нормальная плюс', 'slightly_dry': 'Слегка влажная', 'smoothing': 'Разглаживание',
+      'not_running': 'Остановлена', 'pre_wash': 'Предв. стирка', 'main_wash': 'Основная стирка', 'rinse': 'Полоскание',
+      'spin': 'Отжим', 'drain': 'Слив', 'anti_crease': 'Защита от сминания', 'cooling_down': 'Охлаждение', 'drying': 'Сушка',
+      'finished': 'Завершено', 'cleaning': 'Очистка', 'comfort_cooling': 'Охлаждение (комфорт)', 'disinfecting': 'Дезинфекция',
+      'freshen_up_and_moisten': 'Освежить и увлажнить', 'hand_iron': 'Под утюг', 'hygiene': 'Гигиена', 'moisten': 'Увлажнение',
+      'program_running': 'В процессе', 'rinses': 'Полоскания', 'safety_cooling': 'Безопасное охлаждение', 'soak': 'Замачивание',
+      'starch_stop': 'Остановка (крахмал)', 'steam_smoothing': 'Разглаживание паром', 'thermo_spin': 'Термоотжим',
+      'timed_drying': 'Сушка по времени', 'venting': 'Вентиляция', 'automatic_plus': 'Автоматическая+',
+      'bed_linen': 'Постельное белье', 'cool_air': 'Холодный обдув', 'warm_air': 'Теплый обдув', 'cottonrepair': 'Восстановление хлопка',
+      'cottons_eco': 'Хлопок Эко', 'curtains': 'Шторы', 'dark_jeans': 'Темные джинсы', 'down_filled_items': 'Пуховики',
+      'easy_care': 'Тонкое белье', 'first_wash': 'Первая стирка', 'freshen_up': 'Освежить', 'game_pieces': 'Спортивная экипировка',
+      'outdoor_garments': 'Верхняя одежда', 'powerfresh': 'PowerFresh', 'pre_ironing': 'Предварительная глажка',
+      'quick_power_wash': 'QuickPowerWash', 'rinse_out_lint': 'Смыв ворса', 'separate_rinse_starch': 'Полоскание/Крахмал',
+      'smartmatic': 'SmartMatic', 'starch': 'Крахмал', 'steam_care': 'Обработка паром', 'stuffed_toys': 'Мягкие игрушки',
+      'trainers_refresh': 'Освежить кроссовки', 'no_program': 'Нет программы', 'delicates': 'Деликатная', 'cottons': 'Хлопок',
+      'minimum_iron': 'Легкая глажка', 'woollens': 'Шерсть', 'silks': 'Шелк', 'shirts': 'Рубашки', 'express_20': 'Экспресс 20',
+      'dark_garments': 'Темные вещи', 'denim': 'Джинсы', 'outerwear': 'Верхняя одежда', 'proofing': 'Пропитка',
+      'sportswear': 'Спортивная', 'trainers': 'Кроссовки', 'down_duvets': 'Пуховики', 'pillows': 'Подушки',
+      'cottons_hygiene': 'Хлопок Гигиена', 'eco_40_60': 'Eco 40-60', 'drain_spin': 'Слив / Отжим', 'clean_machine': 'Очистка машины',
+      'off': 'Выкл', 'on': 'Вкл', 'in_use': 'В работе', 'programmed': 'Запрограммировано', 'pause': 'Пауза',
+      'program_ended': 'Завершено', 'failure': 'Ошибка'
     };
   }
 
@@ -353,7 +345,7 @@
     }
     this.config = {
       image: '/local/miele/washer.webp',
-      appliance_type: 'washer', // washer или dryer
+      appliance_type: 'washer', 
       ...config
     };
 
@@ -362,43 +354,38 @@
 
     this.entities = {
       base: base,
-      remaining: \`\${base}_remaining_time\`,
-      elapsed: \`\${base}_elapsed_time\`,
-      speed: \`\${base}_spin_speed\`,
-      program: \`\${base}_program\`,
-      phase: \`\${base}_program_phase\`,
+      remaining: this.config.remaining_entity || \`\${base}_remaining_time\`,
+      elapsed: this.config.elapsed_entity || \`\${base}_elapsed_time\`,
+      speed: this.config.speed_entity || \`\${base}_spin_speed\`,
+      program: this.config.program_entity || \`\${base}_program\`,
+      phase: this.config.phase_entity || \`\${base}_program_phase\`,
       power: this.config.power_entity || \`switch.\${devName}_power\`,
       start: this.config.start_entity || \`button.\${devName}_zapustit\`,
       stop: this.config.stop_entity || \`button.\${devName}_ostanovit\`,
       door: this.config.door_entity || \`binary_sensor.\${devName}_door\`,
-      energy: \`\${base}_energy_consumption\`,
-      water: \`\${base}_water_consumption\`,
-      td1: \`\${base}_twindos_1_level\`,
-      td2: \`\${base}_twindos_2_level\`,
-      drying_step: \`\${base}_drying_step\`,
-      problem: \`binary_sensor.\${devName}_problem\`,
-      notification: \`binary_sensor.\${devName}_notification_active\`
+      energy: this.config.energy_entity || \`\${base}_energy_consumption\`,
+      water: this.config.water_entity || \`\${base}_water_consumption\`,
+      td1: this.config.td1_entity || \`\${base}_twindos_1_level\`,
+      td2: this.config.td2_entity || \`\${base}_twindos_2_level\`,
+      drying_step: this.config.drying_step_entity || \`\${base}_drying_step\`,
+      problem: this.config.problem_entity || \`binary_sensor.\${devName}_problem\`,
+      notification: this.config.notification_entity || \`binary_sensor.\${devName}_notification_active\`
     };
   }
 
   set hass(hass) {
     this._hass = hass;
-    if (!this.content) {
-      this.renderSetup();
-    }
+    if (!this.content) { this.renderSetup(); }
     this.updateData();
   }
 
   translate(val) {
     if (!val) return '';
     const key = val.toLowerCase().replace(/ /g, '_'); 
-    if (this.translations[key]) {
-      return this.translations[key];
-    }
+    if (this.translations[key]) return this.translations[key];
     return val.charAt(0).toUpperCase() + val.slice(1).replace(/_/g, ' ');
   }
 
-  // Функция для открытия истории сенсора (More Info)
   openMoreInfo(entityId) {
     if (!entityId) return;
     const event = new Event('hass-more-info', { bubbles: true, cancelable: true, composed: true });
@@ -409,216 +396,72 @@
   renderSetup() {
     this.shadowRoot.innerHTML = \`
       <style>
-        ha-card {
-          background: transparent;
-          border: none;
-          box-shadow: none;
-        }
-        .card-container {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          border-radius: var(--ha-card-border-radius, 12px);
-        }
-        .background {
-          width: 100%;
-          display: block;
-          pointer-events: none;
-        }
-        .text {
-          position: absolute;
-          white-space: nowrap;
-          font-weight: bold;
-          text-shadow: 1px 1px 3px black;
-          transform: translate(-50%, -50%);
-        }
-        .icon {
-          position: absolute;
-          transform: translate(-50%, -50%);
-          cursor: pointer;
-          filter: drop-shadow(1px 1px 2px black);
-        }
-
-        /* Добавляем курсор-указатель для кликабельных зон */
-        .drum-info, .remaining-time, .water-container, .energy-val, .twindos {
-          cursor: pointer;
-        }
-
-        /* Умный контейнер для надписей в барабане (Flexbox) */
-        .drum-info {
-          position: absolute;
-          top: 43%; 
-          left: 50%;
-          transform: translate(-50%, -50%);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 70%;
-          gap: 6px; /* Отступ между надписями */
-        }
-        .drum-text {
-          white-space: nowrap;
-          font-weight: bold;
-          text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0 0 10px black;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+        ha-card { background: transparent; border: none; box-shadow: none; }
+        .card-container { position: relative; width: 100%; overflow: hidden; border-radius: var(--ha-card-border-radius, 12px); }
+        .background { width: 100%; display: block; pointer-events: none; }
+        .text { position: absolute; white-space: nowrap; font-weight: bold; text-shadow: 1px 1px 3px black; transform: translate(-50%, -50%); }
+        .icon { position: absolute; transform: translate(-50%, -50%); cursor: pointer; filter: drop-shadow(1px 1px 2px black); }
+        .drum-info, .remaining-time, .water-container, .energy-val, .twindos { cursor: pointer; }
+        .drum-info { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 70%; gap: 6px; }
+        .drum-text { white-space: nowrap; font-weight: bold; text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0 0 10px black; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .program-phase { color: #00ff00; font-size: clamp(10px, 2.5vw, 16px); }
         .spin-speed { color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); }
         .program-name { color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); }
         .drying-step { color: #00bfff; font-size: clamp(8px, 2vw, 14px); }
-
-        /* Верхний дисплей */
         .remaining-time { top: 5.5%; left: 48%; color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); transform: translate(-50%, -50%); max-width: 25%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
         .btn-startstop { top: 5.5%; left: 61%; --mdc-icon-size: 1.3em; }
         .btn-power { top: 5.5%; left: 81.5%; --mdc-icon-size: 1.5em; }
-
-        /* Дверца, Вода, Энергия */
         .door-lock { top: 42%; left: 18%; --mdc-icon-size: 1.6em; }
         .water-icon { top: 87%; left: 20%; color: #00bfff; --mdc-icon-size: 1.7em; }
         .water-val { top: 91%; left: 20%; color: #ffffff; font-size: clamp(10px, 3vw, 15px); }
         .energy-icon { top: 20%; left: 90%; color: #ff8c00; --mdc-icon-size: 1.7em; }
         .energy-val { top: 24%; left: 90%; color: #ffffff; font-size: clamp(10px, 3vw, 15px); }
-
-        /* Кольцо прогресса */
-        .progress-ring {
-          position: absolute; top: 43%; left: 50%; width: 55%; height: 55%;
-          transform: translate(-50%, -50%) rotate(-90deg);
-          pointer-events: none;
-        }
+        .progress-ring { position: absolute; top: 43%; left: 50%; width: 55%; height: 55%; transform: translate(-50%, -50%) rotate(-90deg); pointer-events: none; }
         .ring-bg { fill: none; stroke: rgba(150, 150, 150, 0.4); stroke-width: 6; }
         .ring-fg { fill: none; stroke: #ff8c00; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
-
-        /* TwinDos контейнеры */
         .twindos-container { display: block; }
-        .twindos {
-          position: absolute; height: 14%; width: 20%; border-radius: 6px; overflow: hidden;
-          background: rgba(140, 140, 140, 0.4); border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box;
-        }
+        .twindos { position: absolute; height: 14%; width: 20%; border-radius: 6px; overflow: hidden; background: rgba(140, 140, 140, 0.4); border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
         .twindos-1 { top: 79%; left: 47%; }
         .twindos-2 { top: 79%; left: 73%; }
         .twindos-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0, 191, 255, 0.8), rgba(0, 191, 255, 0.4)); transition: height 0.5s ease; z-index: 1; }
         .twindos-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 2; padding: 4px 0; box-sizing: border-box;}
         .twindos-label { color: white; font-size: clamp(6px, 1.5vw, 12px); font-weight: bold; }
         .twindos-val { color: white; font-size: clamp(10px, 2.5vw, 16px); font-weight: bold; text-shadow: 1px 1px 3px black; }
-
-        /* Зона фильтра (для сушилки) */
-        .filter-alert {
-          display: none;
-          position: absolute;
-          top: 84.5%; 
-          left: 27.5%;
-          width: 41%; 
-          height: 15%; 
-          transform: translate(-50%, -50%);
-          background: rgba(255, 0, 0, 0.7);
-          border-radius: 8px;
-          border: 2px solid red;
-          color: white;
-          font-weight: bold;
-          font-size: clamp(10px, 2vw, 16px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          text-shadow: 1px 1px 3px black;
-          box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-          animation: pulse 2s infinite;
-          z-index: 5;
-          cursor: pointer;
-        }
-
-        @keyframes pulse {
-          0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); }
-          50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); }
-          100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); }
-        }
+        .filter-alert { display: none; position: absolute; top: 84.5%; left: 27.5%; width: 41%; height: 15%; transform: translate(-50%, -50%); background: rgba(255, 0, 0, 0.7); border-radius: 8px; border: 2px solid red; color: white; font-weight: bold; font-size: clamp(10px, 2vw, 16px); display: flex; align-items: center; justify-content: center; text-align: center; text-shadow: 1px 1px 3px black; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: pulse 2s infinite; z-index: 5; cursor: pointer; }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } 50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); } 100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } }
       </style>
 
       <ha-card>
         <div class="card-container">
           <img class="background" src="\${this.config.image}" />
-          
-          <svg class="progress-ring" viewBox="0 0 100 100">
-            <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
-            <circle class="ring-fg" cx="50" cy="50" r="45"></circle>
-          </svg>
-
-          <div class="drum-info">
-            <div class="drum-text program-phase"></div>
-            <div class="drum-text spin-speed"></div>
-            <div class="drum-text program-name"></div>
-            <div class="drum-text drying-step"></div>
-          </div>
-          
-          <div class="text remaining-time"></div>
-          <ha-icon class="icon btn-startstop"></ha-icon>
-          <ha-icon class="icon btn-power" icon="mdi:power"></ha-icon>
-          <ha-icon class="icon door-lock"></ha-icon>
-
-          <div class="water-container">
-            <div class="text water-val"></div>
-            <ha-icon class="icon water-icon" icon="mdi:water-outline"></ha-icon>
-          </div>
-          
-          <div class="text energy-val"></div>
-          <ha-icon class="icon energy-icon" icon="mdi:lightning-bolt-outline"></ha-icon>
-
+          <svg class="progress-ring" viewBox="0 0 100 100"><circle class="ring-bg" cx="50" cy="50" r="45"></circle><circle class="ring-fg" cx="50" cy="50" r="45"></circle></svg>
+          <div class="drum-info"><div class="drum-text program-phase"></div><div class="drum-text spin-speed"></div><div class="drum-text program-name"></div><div class="drum-text drying-step"></div></div>
+          <div class="text remaining-time"></div><ha-icon class="icon btn-startstop"></ha-icon><ha-icon class="icon btn-power" icon="mdi:power"></ha-icon><ha-icon class="icon door-lock"></ha-icon>
+          <div class="water-container"><div class="text water-val"></div><ha-icon class="icon water-icon" icon="mdi:water-outline"></ha-icon></div>
+          <div class="text energy-val"></div><ha-icon class="icon energy-icon" icon="mdi:lightning-bolt-outline"></ha-icon>
           <div class="twindos-container">
-            <div class="twindos twindos-1">
-              <div class="twindos-fill"></div>
-              <div class="twindos-content">
-                <div class="twindos-label">ФАЗА 1</div>
-                <div class="twindos-val"></div>
-              </div>
-            </div>
-            
-            <div class="twindos twindos-2">
-              <div class="twindos-fill"></div>
-              <div class="twindos-content">
-                <div class="twindos-label">ФАЗА 2</div>
-                <div class="twindos-val"></div>
-              </div>
-            </div>
+            <div class="twindos twindos-1"><div class="twindos-fill"></div><div class="twindos-content"><div class="twindos-label">ФАЗА 1</div><div class="twindos-val"></div></div></div>
+            <div class="twindos twindos-2"><div class="twindos-fill"></div><div class="twindos-content"><div class="twindos-label">ФАЗА 2</div><div class="twindos-val"></div></div></div>
           </div>
-
-          <div class="filter-alert">
-            <ha-icon icon="mdi:alert-circle-outline" style="margin-right: 5px;"></ha-icon>
-            Очистите фильтр!
-          </div>
-
+          <div class="filter-alert"><ha-icon icon="mdi:alert-circle-outline" style="margin-right: 5px;"></ha-icon>Очистите фильтр!</div>
         </div>
       </ha-card>
     \`;
 
     this.content = this.shadowRoot.querySelector('.card-container');
-    
-    // Биндинг кнопок действий
     this.shadowRoot.querySelector('.btn-power').addEventListener('click', () => this.togglePower());
     this.shadowRoot.querySelector('.btn-startstop').addEventListener('click', () => this.toggleStartStop());
-
-    // Биндинг кликов для открытия окна истории (More Info)
     this.shadowRoot.querySelector('.drum-info').addEventListener('click', () => this.openMoreInfo(this.entities.base));
     this.shadowRoot.querySelector('.remaining-time').addEventListener('click', () => this.openMoreInfo(this.entities.remaining));
     this.shadowRoot.querySelector('.door-lock').addEventListener('click', () => this.openMoreInfo(this.entities.door));
-    
     this.shadowRoot.querySelector('.water-container').addEventListener('click', () => this.openMoreInfo(this.entities.water));
-    
     this.shadowRoot.querySelector('.energy-val').addEventListener('click', () => this.openMoreInfo(this.entities.energy));
     this.shadowRoot.querySelector('.energy-icon').addEventListener('click', () => this.openMoreInfo(this.entities.energy));
-    
     this.shadowRoot.querySelector('.twindos-1').addEventListener('click', () => this.openMoreInfo(this.entities.td1));
     this.shadowRoot.querySelector('.twindos-2').addEventListener('click', () => this.openMoreInfo(this.entities.td2));
-    
     this.shadowRoot.querySelector('.filter-alert').addEventListener('click', () => {
        const problemState = this._hass.states[this.entities.problem]?.state;
-       if (problemState === 'on') {
-           this.openMoreInfo(this.entities.problem);
-       } else {
-           this.openMoreInfo(this.entities.notification);
-       }
+       if (problemState === 'on') { this.openMoreInfo(this.entities.problem); } else { this.openMoreInfo(this.entities.notification); }
     });
   }
 
@@ -627,8 +470,6 @@
     const isInvalid = (val) => val === undefined || val === null || val === '' || val === 'unknown' || val === 'unavailable';
     
     const mainState = state(this.entities.base);
-    
-    // Защита от опечаток в entity
     if (mainState === undefined) {
       this.setText('.program-name', 'Сенсор не найден');
       this.shadowRoot.querySelector('.program-name').style.display = 'block';
@@ -636,21 +477,17 @@
       this.shadowRoot.querySelector('.spin-speed').style.display = 'none';
       this.shadowRoot.querySelector('.drying-step').style.display = 'none';
       this.shadowRoot.querySelector('.progress-ring').style.display = 'none';
-      if (this.shadowRoot.querySelector('.btn-power')) {
-         this.shadowRoot.querySelector('.btn-power').style.color = '#ff0000';
-      }
+      if (this.shadowRoot.querySelector('.btn-power')) { this.shadowRoot.querySelector('.btn-power').style.color = '#ff0000'; }
       return;
     }
     
     const power = state(this.entities.power);
     const door = state(this.entities.door);
     const isDryer = this.config.appliance_type === 'dryer';
-    
-    // Управление видимостью кольца и контента
     const isPoweredOn = power === 'on' || (mainState && mainState !== 'off' && !isInvalid(mainState));
+    
     this.shadowRoot.querySelector('.progress-ring').style.display = isPoweredOn ? 'block' : 'none';
     
-    // Тексты по центру (Барабан)
     const phase = state(this.entities.phase);
     const phaseText = (!isPoweredOn || phase === 'not_running') ? '' : (isInvalid(phase) ? '-' : this.translate(phase));
     this.setText('.program-phase', phaseText);
@@ -666,39 +503,22 @@
     this.setText('.program-name', progText);
     this.shadowRoot.querySelector('.program-name').style.display = progText ? 'block' : 'none';
     
-    // Этап сушки (если есть)
     const dryingStep = state(this.entities.drying_step);
     let stepText = '';
-    if (isPoweredOn && this._hass.states[this.entities.drying_step]) {
-        stepText = isInvalid(dryingStep) ? '-' : this.translate(dryingStep);
-    }
+    if (isPoweredOn && this._hass.states[this.entities.drying_step]) { stepText = isInvalid(dryingStep) ? '-' : this.translate(dryingStep); }
     this.setText('.drying-step', stepText);
     this.shadowRoot.querySelector('.drying-step').style.display = stepText ? 'block' : 'none';
 
-    // Верхний дисплей (Оставшееся время)
     const remain = state(this.entities.remaining);
-    const remainText = isPoweredOn ? (isInvalid(remain) ? '-' : \`\${remain} мин\`) : '';
-    this.setText('.remaining-time', remainText);
+    this.setText('.remaining-time', isPoweredOn ? (isInvalid(remain) ? '-' : \`\${remain} мин\`) : '');
 
-    // Логика для типа устройства: Сушилка vs Стиралка
     if (isDryer) {
-      // Прячем воду и TwinDos для сушилки
       this.shadowRoot.querySelector('.water-container').style.display = 'none';
       this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
-
-      // Логика фильтра
       const isProblem = state(this.entities.problem) === 'on';
       const isNotification = state(this.entities.notification) === 'on';
-      
-      // Если есть проблема или уведомление и машинка включена
-      if (isPoweredOn && (isProblem || isNotification)) {
-         this.shadowRoot.querySelector('.filter-alert').style.display = 'flex';
-      } else {
-         this.shadowRoot.querySelector('.filter-alert').style.display = 'none';
-      }
-
+      this.shadowRoot.querySelector('.filter-alert').style.display = (isPoweredOn && (isProblem || isNotification)) ? 'flex' : 'none';
     } else {
-      // Для стиралки показываем воду
       this.shadowRoot.querySelector('.water-container').style.display = 'block';
       const waterEntity = this._hass.states[this.entities.water];
       if (waterEntity) {
@@ -708,25 +528,20 @@
           this.shadowRoot.querySelector('.water-icon').style.display = 'none';
           this.setText('.water-val', '');
       }
-
-      // Логика TwinDos
       const td1State = state(this.entities.td1);
       if (!this._hass.states[this.entities.td1]) {
         this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
       } else {
         this.shadowRoot.querySelector('.twindos-container').style.display = 'block';
         const td2State = state(this.entities.td2);
-        
         this.setText('.twindos-1 .twindos-val', isInvalid(td1State) ? '-' : \`\${parseFloat(td1State) || 0}%\`);
         this.shadowRoot.querySelector('.twindos-1 .twindos-fill').style.height = isInvalid(td1State) ? '0%' : \`\${parseFloat(td1State) || 0}%\`;
-        
         this.setText('.twindos-2 .twindos-val', isInvalid(td2State) ? '-' : \`\${parseFloat(td2State) || 0}%\`);
         this.shadowRoot.querySelector('.twindos-2 .twindos-fill').style.height = isInvalid(td2State) ? '0%' : \`\${parseFloat(td2State) || 0}%\`;
       }
       this.shadowRoot.querySelector('.filter-alert').style.display = 'none';
     }
 
-    // Энергия (Показываем для всех, если есть данные)
     const energyEntity = this._hass.states[this.entities.energy];
     if (energyEntity) {
         this.shadowRoot.querySelector('.energy-icon').style.display = 'block';
@@ -736,20 +551,15 @@
         this.setText('.energy-val', '');
     }
 
-    // Иконка замка
     const lockIcon = this.shadowRoot.querySelector('.door-lock');
     if (lockIcon) {
        lockIcon.setAttribute('icon', door === 'on' ? 'mdi:lock-open-variant' : 'mdi:lock');
        lockIcon.style.color = door === 'on' ? '#cccccc' : '#00ff00';
     }
 
-    // Кнопка питания
     const powerIcon = this.shadowRoot.querySelector('.btn-power');
-    if (powerIcon) {
-       powerIcon.style.color = isPoweredOn ? '#00ff00' : '#ff8c00';
-    }
+    if (powerIcon) { powerIcon.style.color = isPoweredOn ? '#00ff00' : '#ff8c00'; }
 
-    // Кнопка Start/Stop
     const playIcon = this.shadowRoot.querySelector('.btn-startstop');
     if (playIcon) {
        playIcon.style.display = isPoweredOn ? 'block' : 'none';
@@ -762,49 +572,34 @@
        }
     }
 
-    // Рисуем SVG кольцо
     if (isPoweredOn) {
       const elapsed = parseFloat(state(this.entities.elapsed)) || 0;
       const remainTime = parseFloat(state(this.entities.remaining)) || 0;
       const total = elapsed + remainTime;
       const progress = total > 0 ? (elapsed / total) : 0;
-      
-      const radius = 45;
-      const circumference = 2 * Math.PI * radius;
-      const offset = circumference - (progress * circumference);
-      
+      const circumference = 2 * Math.PI * 45;
       const ringFg = this.shadowRoot.querySelector('.ring-fg');
       if (ringFg) {
          ringFg.style.strokeDasharray = \`\${circumference}\`;
-         ringFg.style.strokeDashoffset = offset;
+         ringFg.style.strokeDashoffset = circumference - (progress * circumference);
       }
     }
   }
 
-  setText(selector, text) {
-    const el = this.shadowRoot.querySelector(selector);
-    if (el) el.innerText = text;
-  }
+  setText(selector, text) { const el = this.shadowRoot.querySelector(selector); if (el) el.innerText = text; }
 
-  // Сервисы кнопок
   togglePower() {
     const state = this._hass.states[this.entities.power]?.state;
-    if (state) {
-        this._hass.callService('switch', state === 'on' ? 'turn_off' : 'turn_on', { entity_id: this.entities.power });
-    }
+    if (state) { this._hass.callService('switch', state === 'on' ? 'turn_off' : 'turn_on', { entity_id: this.entities.power }); }
   }
 
   toggleStartStop() {
     const state = this._hass.states[this.entities.base]?.state;
     const btn = state === 'in_use' ? this.entities.stop : this.entities.start;
-    if (this._hass.states[btn]) {
-        this._hass.callService('button', 'press', { entity_id: btn });
-    }
+    if (this._hass.states[btn]) { this._hass.callService('button', 'press', { entity_id: btn }); }
   }
 
-  getCardSize() {
-    return 4;
-  }
+  getCardSize() { return 4; }
 }
 
 customElements.define('miele-appliance-card', MieleApplianceCard);
@@ -818,7 +613,7 @@ window.customCards.push({
 
     const translations = {
         ru: {
-            title: "Генератор кастомной карточки Miele (Home Assistant)",
+            title: "Генератор карточки Miele (Home Assistant)",
             instructions_title: "Установка Custom Card:",
             step1: "Скопируйте JS код плагина (Блок 1) и сохраните его в файл <code>config/www/miele/miele-appliance-card.js</code>.",
             step2: "В Home Assistant зайдите в <i>Настройки -> Панели управления -> Ресурсы</i>. Добавьте путь <code>/local/miele/miele-appliance-card.js</code> как <b>Модуль JavaScript</b>.",
@@ -836,7 +631,8 @@ window.customCards.push({
             js_label: "Блок 1: Код плагина (Сохраните в miele-appliance-card.js):",
             btn_copy_js: "📋 Скопировать JS код",
             btn_copied: "✅ Скопировано!",
-            footer: "Разработано <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> для техники Miele"
+            adv_btn: "⚙️ Продвинутые настройки (Сенсоры)",
+            adv_hint: "Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (генерируемых интеграцией). Оставьте пустыми для авто-генерации."
         },
         en: {
             title: "Miele Custom Card Generator (Home Assistant)",
@@ -857,7 +653,8 @@ window.customCards.push({
             js_label: "Block 1: Plugin Code (Save to miele-appliance-card.js):",
             btn_copy_js: "📋 Copy JS Code",
             btn_copied: "✅ Copied!",
-            footer: "Developed by <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> for Miele appliances"
+            adv_btn: "⚙️ Advanced Settings (Sensors)",
+            adv_hint: "Fill these fields ONLY if your sensor names differ from the default ones generated by the integration. Leave blank for auto-generation."
         },
         de: {
             title: "Miele Custom Card Generator (Home Assistant)",
@@ -878,7 +675,8 @@ window.customCards.push({
             js_label: "Block 1: Plugin-Code (Speichern in miele-appliance-card.js):",
             btn_copy_js: "📋 JS Code kopieren",
             btn_copied: "✅ Kopiert!",
-            footer: "Entwickelt von <a href='https://github.com/Eugen417' target='_blank'>Eugen417</a> für Miele Geräte"
+            adv_btn: "⚙️ Erweiterte Einstellungen (Sensoren)",
+            adv_hint: "Füllen Sie diese Felder NUR aus, wenn Ihre Sensornamen von den Standardwerten der Integration abweichen. Für die automatische Generierung leer lassen."
         }
     };
 
@@ -910,9 +708,15 @@ window.customCards.push({
         document.getElementById('ui_btn_copy_yaml').innerText = t.btn_copy_yaml;
         document.getElementById('ui_js_label').innerText = t.js_label;
         document.getElementById('ui_btn_copy_js').innerText = t.btn_copy_js;
-        document.getElementById('ui_footer').innerHTML = t.footer;
+        document.getElementById('ui_adv_btn').innerText = t.adv_btn;
+        document.getElementById('ui_adv_hint').innerText = t.adv_hint;
 
         generateYAML();
+    }
+
+    function toggleAdvanced() {
+        const panel = document.getElementById("advancedPanel");
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
     }
 
     function updatePreview() {
@@ -927,6 +731,31 @@ window.customCards.push({
         let image = type === 'washer' ? 'washer.webp' : 'dryer.webp';
 
         let yaml = `type: custom:miele-appliance-card\nentity: sensor.${entityPrefix}\nappliance_type: ${type}\nimage: /local/miele/${image}`;
+
+        const advancedInputs = [
+            { id: 'adv_power', key: 'power_entity' },
+            { id: 'adv_door', key: 'door_entity' },
+            { id: 'adv_program', key: 'program_entity' },
+            { id: 'adv_phase', key: 'phase_entity' },
+            { id: 'adv_remain', key: 'remaining_entity' },
+            { id: 'adv_elapsed', key: 'elapsed_entity' },
+            { id: 'adv_speed', key: 'speed_entity' },
+            { id: 'adv_drying', key: 'drying_step_entity' },
+            { id: 'adv_water', key: 'water_entity' },
+            { id: 'adv_energy', key: 'energy_entity' },
+            { id: 'adv_td1', key: 'td1_entity' },
+            { id: 'adv_td2', key: 'td2_entity' },
+            { id: 'adv_start', key: 'start_entity' },
+            { id: 'adv_stop', key: 'stop_entity' }
+        ];
+
+        advancedInputs.forEach(item => {
+            let val = document.getElementById(item.id).value.trim();
+            if (val) {
+                yaml += `\n${item.key}: ${val}`;
+            }
+        });
+
         document.getElementById("yamlOutput").value = yaml;
     }
 
