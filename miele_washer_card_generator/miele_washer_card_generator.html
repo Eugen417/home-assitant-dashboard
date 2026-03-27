@@ -3,225 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miele Appliance Card Generator</title>
+    <title>Miele Appliance Card Generator V3.1</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f0f2f5; 
+            color: #333; 
+            line-height: 1.6; 
+            margin: 0; 
+            padding: 20px; 
         }
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
         }
-        h1 {
-            color: #03a9f4;
-            text-align: center;
-            margin-bottom: 20px;
+        h1 { 
+            color: #03a9f4; 
+            text-align: center; 
+            margin-bottom: 20px; 
         }
-        .lang-selector {
-            text-align: center;
-            margin-bottom: 30px;
+        .lang-selector { 
+            text-align: center; 
+            margin-bottom: 30px; 
         }
-        .lang-selector button {
-            background-color: #e0e0e0;
-            color: #333;
-            border: none;
-            padding: 8px 16px;
-            margin: 0 5px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
+        .lang-selector button { 
+            background-color: #e0e0e0; 
+            color: #333; 
+            border: none; 
+            padding: 8px 16px; 
+            margin: 0 5px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: all 0.3s; 
         }
-        .lang-selector button:hover {
-            background-color: #cfcfcf;
+        .lang-selector button.active { 
+            background-color: #03a9f4; 
+            color: white; 
+            box-shadow: 0 2px 5px rgba(3, 169, 244, 0.4); 
         }
-        .lang-selector button.active {
-            background-color: #03a9f4;
-            color: white;
-            box-shadow: 0 2px 5px rgba(3, 169, 244, 0.4);
+        .main-layout { 
+            display: flex; 
+            gap: 30px; 
+            flex-wrap: wrap; 
         }
-        
-        .main-layout {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
+        .left-col { 
+            flex: 1; 
+            min-width: 350px; 
         }
-        .left-col {
-            flex: 1;
-            min-width: 350px;
+        .right-col { 
+            flex: 0 0 350px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
         }
-        .right-col {
-            flex: 0 0 350px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .instructions { 
+            background: #e1f5fe; 
+            border-left: 5px solid #03a9f4; 
+            padding: 20px; 
+            border-radius: 4px; 
+            margin-bottom: 30px; 
         }
-
-        .instructions {
-            background: #e1f5fe;
-            border-left: 5px solid #03a9f4;
-            padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 30px;
+        .instructions h3 { 
+            margin-top: 0; 
+            color: #0277bd; 
         }
-        .instructions h3 {
-            margin-top: 0;
-            color: #0277bd;
+        .form-group { 
+            margin-bottom: 20px; 
         }
-        .form-group {
-            margin-bottom: 20px;
+        label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
         }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
+        input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            box-sizing: border-box; 
         }
-        input[type="text"], select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
+        .preview-box { 
+            background: #f8f9fa; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 12px; 
+            padding: 15px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            text-align: center; 
         }
-        
-        .preview-box {
-            background: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
+        .preview-image { 
+            max-width: 100%; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
         }
-        .preview-box h3 {
-            margin-top: 0;
-            color: #555;
-            font-size: 16px;
+        .preview-hint { 
+            font-size: 12px; 
+            color: #d32f2f; 
+            margin-top: 10px; 
+            font-weight: bold; 
+            line-height: 1.4; 
         }
-        .preview-image {
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .toggle-btn { 
+            background: none; 
+            border: none; 
+            color: #03a9f4; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 0; 
+            font-size: 15px; 
+            display: flex; 
+            align-items: center; 
+            margin-top: 10px; 
         }
-        .preview-hint {
-            font-size: 12px;
-            color: #d32f2f;
-            margin-top: 10px;
-            font-weight: bold;
-            line-height: 1.4;
+        .advanced-panel { 
+            display: none; 
+            background: #f5f5f5; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            border: 1px solid #ddd; 
         }
-
-        /* Advanced Settings Styles */
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: #03a9f4;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
+        .adv-section-title { 
+            font-weight: bold; 
+            color: #0277bd; 
+            border-bottom: 1px solid #ddd; 
+            margin: 20px 0 10px 0; 
+            padding-bottom: 5px; 
+            font-size: 14px; 
         }
-        .toggle-btn:hover {
-            text-decoration: underline;
+        .grid-2-col { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
         }
-        .advanced-panel {
-            display: none;
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
+        .grid-2-col label { 
+            font-size: 11px; 
+            margin-bottom: 2px; 
+            color: #666; 
+            text-transform: uppercase; 
         }
-        .adv-hint {
-            font-size: 13px;
-            color: #666;
-            margin-top: 0;
-            margin-bottom: 15px;
+        .grid-2-col input { 
+            padding: 8px; 
+            font-size: 13px; 
         }
-        .adv-section-title {
-            font-weight: bold;
-            color: #0277bd;
-            border-bottom: 1px solid #ddd;
-            margin: 20px 0 10px 0;
-            padding-bottom: 5px;
-            font-size: 14px;
+        .output-group { 
+            margin-top: 30px; 
+            width: 100%; 
+            background: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd; 
         }
-        .adv-section-title:first-of-type {
-            margin-top: 0;
+        .output-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
         }
-        .grid-2-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .output-header label { 
+            margin-bottom: 0; 
         }
-        .grid-2-col label {
-            font-size: 12px;
-            margin-bottom: 4px;
-            color: #555;
+        textarea { 
+            width: 100%; 
+            padding: 15px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            font-family: monospace; 
+            font-size: 13px; 
+            background: #fff; 
+            box-sizing: border-box; 
+            resize: vertical; 
         }
-        .grid-2-col input {
-            padding: 8px;
-            font-size: 13px;
+        .copy-btn { 
+            background-color: #4caf50; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            font-size: 13px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
         }
-
-        .output-group {
-            margin-top: 30px;
-            width: 100%;
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+        .copy-btn:hover { 
+            background-color: #388e3c; 
         }
-        textarea {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
-            background: #fff;
-            box-sizing: border-box;
-            resize: vertical;
+        .footer { 
+            margin-top: 40px; 
+            padding-top: 20px; 
+            border-top: 1px solid #eee; 
+            text-align: center; 
+            font-size: 14px; 
+            color: #777; 
         }
-        .copy-btn {
-            background-color: #4caf50;
-            margin-top: 10px;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
+        .footer a { 
+            color: #03a9f4; 
+            text-decoration: none; 
+            font-weight: bold; 
         }
-        .copy-btn:hover {
-            background-color: #388e3c;
+        .dual-input { 
+            display: flex; 
+            gap: 20px; 
         }
-        
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            text-align: center;
-            font-size: 14px;
-            color: #777;
-        }
-        .footer a {
-            color: #03a9f4;
-            text-decoration: none;
-            font-weight: bold;
+        .dual-input .form-group { 
+            flex: 1; 
         }
     </style>
 </head>
@@ -239,140 +229,203 @@
     <div class="main-layout">
         <div class="left-col">
             <div class="instructions">
-                <h3 id="ui_instructions_title">Установка Custom Card:</h3>
+                <h3 id="ui_instructions_title">Установка:</h3>
                 <ol>
-                    <li id="ui_step1">Скопируйте JS код плагина (Блок 1) и сохраните его в файл <code>config/www/miele/miele-appliance-card.js</code>.</li>
-                    <li id="ui_step2">В Home Assistant зайдите в <i>Настройки -> Панели управления -> Ресурсы</i>. Добавьте путь <code>/local/miele/miele-appliance-card.js</code> как <b>Модуль JavaScript</b>.</li>
-                    <li id="ui_step3">Положите картинки вашей техники (<b>washer.webp</b> и/или <b>dryer.webp</b>) в ту же папку <code>config/www/miele/</code>.</li>
-                    <li id="ui_step4">Очистите кэш браузера (Cmd+Shift+R или Ctrl+F5) и добавьте карточку на дашборд (Блок 2).</li>
+                    <li id="ui_step1">Сохраните код из <b>Блока 3</b> в файл <code>config/www/miele/miele-appliance-card.js</code>.</li>
+                    <li id="ui_step2">Добавьте ресурс <code>/local/miele/miele-appliance-card.js</code> как <b>JavaScript Module</b>.</li>
+                    <li id="ui_step3">Загрузите <b>washer.webp</b> и <b>dryer.webp</b> в папку <code>/www/miele/</code>.</li>
                 </ol>
             </div>
 
-            <div class="form-group">
-                <label for="applianceType" id="ui_type_label">Тип машины:</label>
-                <select id="applianceType" onchange="updateUI()">
-                    <option value="washer" id="ui_opt_washer">Стиральная машина (с TwinDos)</option>
-                    <option value="dryer" id="ui_opt_dryer">Сушильная машина</option>
-                </select>
+            <div class="dual-input">
+                <div class="form-group">
+                    <label id="ui_label_washer_prefix">Префикс Стиралки:</label>
+                    <input type="text" id="prefixWasher" value="stiralnaia_mashina" onkeyup="generateAll()">
+                </div>
+                <div class="form-group">
+                    <label id="ui_label_dryer_prefix">Префикс Сушилки:</label>
+                    <input type="text" id="prefixDryer" value="sushilnaia_mashina" onkeyup="generateAll()">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="entityId" id="ui_entity_label">ID сущности (префикс):</label>
-                <p style="margin-top: 0; font-size: 14px; color: #666;" id="ui_entity_hint">
-                    Например, если датчик называется <code>sensor.washer_remaining_time</code>, префикс — <b>washer</b>.
-                </p>
-                <input type="text" id="entityId" value="stiralnaia_mashina" onkeyup="updateUI()">
-            </div>
+            <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
+            <div class="advanced-panel" id="advancedPanel">
+                <p style="font-size: 12px; color: #666; margin-bottom: 15px;" id="ui_adv_hint">Используйте, если названия датчиков отличаются от стандартных. Оставьте пустыми для авто-генерации.</p>
+                
+                <div class="adv-section-title">Стиральная машина (Custom Entities):</div>
+                <div class="grid-2-col">
+                    <div><label>Power (switch)</label><input type="text" id="w_adv_power" onkeyup="generateAll()"></div>
+                    <div><label>Door (binary)</label><input type="text" id="w_adv_door" onkeyup="generateAll()"></div>
+                    <div><label>Water (sensor)</label><input type="text" id="w_adv_water" onkeyup="generateAll()"></div>
+                    <div><label>TwinDos 1</label><input type="text" id="w_adv_td1" onkeyup="generateAll()"></div>
+                </div>
 
-            <div class="form-group">
-                <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
-                <div class="advanced-panel" id="advancedPanel">
-                    <p class="adv-hint" id="ui_adv_hint">Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (сгенерированных интеграцией). Серым текстом показано то, что карточка будет искать по умолчанию.</p>
-                    
-                    <div class="adv-section-title" id="ui_adv_general">Общие сенсоры:</div>
-                    <div class="grid-2-col">
-                        <div><label>Power (Вкл/Выкл):</label><input type="text" id="adv_power" onkeyup="generateYAML()"></div>
-                        <div><label>Door (Дверца):</label><input type="text" id="adv_door" onkeyup="generateYAML()"></div>
-                        <div><label>Program (Программа):</label><input type="text" id="adv_program" onkeyup="generateYAML()"></div>
-                        <div><label>Phase (Фаза):</label><input type="text" id="adv_phase" onkeyup="generateYAML()"></div>
-                        <div><label>Time Remaining:</label><input type="text" id="adv_remain" onkeyup="generateYAML()"></div>
-                        <div><label>Time Elapsed:</label><input type="text" id="adv_elapsed" onkeyup="generateYAML()"></div>
-                        <div><label>Energy Consumed:</label><input type="text" id="adv_energy" onkeyup="generateYAML()"></div>
-                        <div><label>Start Button:</label><input type="text" id="adv_start" onkeyup="generateYAML()"></div>
-                        <div><label>Stop Button:</label><input type="text" id="adv_stop" onkeyup="generateYAML()"></div>
-                    </div>
-
-                    <div class="adv-section-title" id="ui_adv_washer">Только для стиральной машины:</div>
-                    <div class="grid-2-col">
-                        <div><label>Spin Speed (Отжим):</label><input type="text" id="adv_speed" onkeyup="generateYAML()"></div>
-                        <div><label>Water Consumed:</label><input type="text" id="adv_water" onkeyup="generateYAML()"></div>
-                        <div><label>TwinDos 1 Level:</label><input type="text" id="adv_td1" onkeyup="generateYAML()"></div>
-                        <div><label>TwinDos 2 Level:</label><input type="text" id="adv_td2" onkeyup="generateYAML()"></div>
-                    </div>
-
-                    <div class="adv-section-title" id="ui_adv_dryer">Только для сушильной машины:</div>
-                    <div class="grid-2-col">
-                        <div><label>Drying Step (Этап сушки):</label><input type="text" id="adv_drying" onkeyup="generateYAML()"></div>
-                    </div>
+                <div class="adv-section-title">Сушильная машина (Custom Entities):</div>
+                <div class="grid-2-col">
+                    <div><label>Power (switch)</label><input type="text" id="d_adv_power" onkeyup="generateAll()"></div>
+                    <div><label>Door (binary)</label><input type="text" id="d_adv_door" onkeyup="generateAll()"></div>
+                    <div><label>Drying Step</label><input type="text" id="d_adv_drying" onkeyup="generateAll()"></div>
+                    <div><label>Problem (binary)</label><input type="text" id="d_adv_problem" onkeyup="generateAll()"></div>
                 </div>
             </div>
         </div>
 
         <div class="right-col">
             <div class="preview-box">
-                <h3 id="ui_preview_title">Статичное превью фона:</h3>
-                <img id="previewImg" src="washer.webp" alt="Miele Appliance" class="preview-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZWVlIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+'">
-                <div class="preview-hint" id="ui_preview_hint">
-                    Внимание! Здесь показан только пустой фон картинки. Все надписи, статусы, кольцо прогресса и уровни TwinDos генерируются автоматически кодом плагина внутри Home Assistant. Это нормально, что картинка пустая.
-                </div>
+                <select id="previewType" onchange="updatePreviewImg()" style="margin-bottom: 10px; width: 100%; padding: 8px; border-radius: 4px;">
+                    <option value="washer">Превью: Стиралка</option>
+                    <option value="dryer">Превью: Сушилка</option>
+                </select>
+                <img id="previewImg" src="washer.webp" class="preview-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZWVlIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+'">
+                <p class="preview-hint" id="ui_preview_hint">Это статичный фон. Кольцо прогресса и данные появятся в Home Assistant.</p>
             </div>
         </div>
     </div>
 
+    <!-- YAML OUTPUTS -->
     <div class="output-group">
-        <label id="ui_yaml_label">Блок 2: Код карточки для Дашборда (Вручную / Manual):</label>
-        <textarea id="yamlOutput" rows="8" readonly></textarea>
-        <button class="copy-btn" id="ui_btn_copy_yaml" onclick="copyToClipboard('yamlOutput', this)">📋 Скопировать YAML</button>
+        <div class="output-header">
+            <label id="ui_label_yaml_washer">Блок 1: YAML для Стиральной машины</label>
+            <button class="copy-btn" onclick="copyToClipboard('yamlWasher', this)">📋 Copy</button>
+        </div>
+        <textarea id="yamlWasher" rows="7" readonly></textarea>
     </div>
 
     <div class="output-group">
-        <label id="ui_js_label">Блок 1: Код плагина (Сохраните в miele-appliance-card.js):</label>
-        <textarea id="jsOutput" rows="15" readonly></textarea>
-        <button class="copy-btn" id="ui_btn_copy_js" onclick="copyToClipboard('jsOutput', this)">📋 Скопировать JS код</button>
+        <div class="output-header">
+            <label id="ui_label_yaml_dryer">Блок 2: YAML для Сушильной машины</label>
+            <button class="copy-btn" onclick="copyToClipboard('yamlDryer', this)">📋 Copy</button>
+        </div>
+        <textarea id="yamlDryer" rows="7" readonly></textarea>
+    </div>
+
+    <!-- JS CODE -->
+    <div class="output-group">
+        <div class="output-header">
+            <label>Блок 3: Код плагина (miele-appliance-card.js)</label>
+            <button class="copy-btn" onclick="copyToClipboard('jsOutput', this)">📋 Copy JS</button>
+        </div>
+        <textarea id="jsOutput" rows="20" readonly></textarea>
     </div>
     
-    <div class="footer" id="ui_footer">
-        Разработано <a href="https://github.com/Eugen417" target="_blank">Eugen417</a> для техники Miele
-    </div>
+    <div class="footer">Developed by <a href="https://github.com/Eugen417" target="_blank">Eugen417</a></div>
 </div>
 
 <script>
-    // Весь исходный код плагина кастомной карточки (экранированный для Textarea)
     const pluginCode = `class MieleApplianceCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-
-    // Встроенный словарь переводов для программ и фаз Miele
     this.translations = {
-      'extra_dry': 'Экстра сухая', 'hand_iron_1': 'Под утюг 1', 'hand_iron_2': 'Под утюг 2', 'machine_iron': 'В гладилку',
-      'normal': 'Нормальная', 'normal_plus': 'Нормальная плюс', 'slightly_dry': 'Слегка влажная', 'smoothing': 'Разглаживание',
-      'not_running': 'Остановлена', 'pre_wash': 'Предв. стирка', 'main_wash': 'Основная стирка', 'rinse': 'Полоскание',
-      'spin': 'Отжим', 'drain': 'Слив', 'anti_crease': 'Защита от сминания', 'cooling_down': 'Охлаждение', 'drying': 'Сушка',
-      'finished': 'Завершено', 'cleaning': 'Очистка', 'comfort_cooling': 'Охлаждение (комфорт)', 'disinfecting': 'Дезинфекция',
-      'freshen_up_and_moisten': 'Освежить и увлажнить', 'hand_iron': 'Под утюг', 'hygiene': 'Гигиена', 'moisten': 'Увлажнение',
-      'program_running': 'В процессе', 'rinses': 'Полоскания', 'safety_cooling': 'Безопасное охлаждение', 'soak': 'Замачивание',
-      'starch_stop': 'Остановка (крахмал)', 'steam_smoothing': 'Разглаживание паром', 'thermo_spin': 'Термоотжим',
-      'timed_drying': 'Сушка по времени', 'venting': 'Вентиляция', 'automatic_plus': 'Автоматическая+',
-      'bed_linen': 'Постельное белье', 'cool_air': 'Холодный обдув', 'warm_air': 'Теплый обдув', 'cottonrepair': 'Восстановление хлопка',
-      'cottons_eco': 'Хлопок Эко', 'curtains': 'Шторы', 'dark_jeans': 'Темные джинсы', 'down_filled_items': 'Пуховики',
-      'easy_care': 'Тонкое белье', 'first_wash': 'Первая стирка', 'freshen_up': 'Освежить', 'game_pieces': 'Спортивная экипировка',
-      'outdoor_garments': 'Верхняя одежда', 'powerfresh': 'PowerFresh', 'pre_ironing': 'Предварительная глажка',
-      'quick_power_wash': 'QuickPowerWash', 'rinse_out_lint': 'Смыв ворса', 'separate_rinse_starch': 'Полоскание/Крахмал',
-      'smartmatic': 'SmartMatic', 'starch': 'Крахмал', 'steam_care': 'Обработка паром', 'stuffed_toys': 'Мягкие игрушки',
-      'trainers_refresh': 'Освежить кроссовки', 'no_program': 'Нет программы', 'delicates': 'Деликатная', 'cottons': 'Хлопок',
-      'minimum_iron': 'Легкая глажка', 'woollens': 'Шерсть', 'silks': 'Шелк', 'shirts': 'Рубашки', 'express_20': 'Экспресс 20',
-      'dark_garments': 'Темные вещи', 'denim': 'Джинсы', 'outerwear': 'Верхняя одежда', 'proofing': 'Пропитка',
-      'sportswear': 'Спортивная', 'trainers': 'Кроссовки', 'down_duvets': 'Пуховики', 'pillows': 'Подушки',
-      'cottons_hygiene': 'Хлопок Гигиена', 'eco_40_60': 'Eco 40-60', 'drain_spin': 'Слив / Отжим', 'clean_machine': 'Очистка машины',
-      'off': 'Выкл', 'on': 'Вкл', 'in_use': 'В работе', 'programmed': 'Запрограммировано', 'pause': 'Пауза',
-      'program_ended': 'Завершено', 'failure': 'Ошибка'
+      'ru': {
+        'extra_dry': 'Экстра сухая',
+        'hand_iron_1': 'Под утюг 1',
+        'hand_iron_2': 'Под утюг 2',
+        'machine_iron': 'В гладилку',
+        'normal': 'Нормальная',
+        'normal_plus': 'Нормальная плюс',
+        'slightly_dry': 'Слегка влажная',
+        'smoothing': 'Разглаживание',
+        'not_running': 'Остановлена',
+        'pre_wash': 'Предв. стирка',
+        'main_wash': 'Основная стирка',
+        'rinse': 'Полоскание',
+        'spin': 'Отжим',
+        'drain': 'Слив',
+        'anti_crease': 'Защита от сминания',
+        'cooling_down': 'Охлаждение',
+        'drying': 'Сушка',
+        'finished': 'Завершено',
+        'cleaning': 'Очистка',
+        'freshen_up': 'Освежить',
+        'program_running': 'В процессе',
+        'off': 'Выкл',
+        'on': 'Вкл',
+        'in_use': 'В работе',
+        'program_ended': 'Завершено',
+        'failure': 'Ошибка',
+        'phase1': 'ФАЗА 1',
+        'phase2': 'ФАЗА 2',
+        'clean_filter': 'Очистите фильтр!',
+        'min': 'мин'
+      },
+      'en': {
+        'extra_dry': 'Extra dry',
+        'hand_iron_1': 'Hand iron 1',
+        'hand_iron_2': 'Hand iron 2',
+        'machine_iron': 'Machine iron',
+        'normal': 'Normal',
+        'normal_plus': 'Normal plus',
+        'slightly_dry': 'Slightly dry',
+        'smoothing': 'Smoothing',
+        'not_running': 'Stopped',
+        'pre_wash': 'Pre-wash',
+        'main_wash': 'Main wash',
+        'rinse': 'Rinse',
+        'spin': 'Spin',
+        'drain': 'Drain',
+        'anti_crease': 'Anti-crease',
+        'cooling_down': 'Cooling down',
+        'drying': 'Drying',
+        'finished': 'Finished',
+        'cleaning': 'Cleaning',
+        'freshen_up': 'Freshen up',
+        'program_running': 'Running',
+        'off': 'Off',
+        'on': 'On',
+        'in_use': 'In use',
+        'program_ended': 'Finished',
+        'failure': 'Failure',
+        'phase1': 'PHASE 1',
+        'phase2': 'PHASE 2',
+        'clean_filter': 'Clean filter!',
+        'min': 'min'
+      },
+      'de': {
+        'extra_dry': 'Extratrocken',
+        'hand_iron_1': 'Bügelfeucht 1',
+        'hand_iron_2': 'Bügelfeucht 2',
+        'machine_iron': 'Mangelſeucht',
+        'normal': 'Normal',
+        'normal_plus': 'Normal plus',
+        'slightly_dry': 'Leichtfeucht',
+        'smoothing': 'Glätten',
+        'not_running': 'Gestoppt',
+        'pre_wash': 'Vorwäsche',
+        'main_wash': 'Hauptwäsche',
+        'rinse': 'Spülen',
+        'spin': 'Schleudern',
+        'drain': 'Abpumpen',
+        'anti_crease': 'Knitterschutz',
+        'cooling_down': 'Abkühlen',
+        'drying': 'Trocknen',
+        'finished': 'Fertig',
+        'cleaning': 'Reinigung',
+        'freshen_up': 'Auffrischen',
+        'program_running': 'In Betrieb',
+        'off': 'Aus',
+        'on': 'An',
+        'in_use': 'In Betrieb',
+        'program_ended': 'Fertig',
+        'failure': 'Fehler',
+        'phase1': 'PHASE 1',
+        'phase2': 'PHASE 2',
+        'clean_filter': 'Filter reinigen!',
+        'min': 'min'
+      }
     };
   }
 
   setConfig(config) {
-    if (!config.entity) {
-      throw new Error('Пожалуйста, укажите entity (например, sensor.stiralnaia_mashina)');
-    }
-    this.config = {
-      image: '/local/miele/washer.webp',
-      appliance_type: 'washer', 
-      ...config
+    if (!config.entity) throw new Error('Specify entity');
+    this.config = { 
+        image: '/local/miele/washer.webp', 
+        appliance_type: 'washer', 
+        lang: 'en', 
+        ...config 
     };
-
     const base = this.config.entity; 
-    const devName = base.split('.')[1]; 
-
+    const devName = base.split('.')[1];
     this.entities = {
       base: base,
       remaining: this.config.remaining_entity || \`\${base}_remaining_time\`,
@@ -394,24 +447,24 @@
     };
   }
 
-  set hass(hass) {
-    this._hass = hass;
-    if (!this.content) { this.renderSetup(); }
-    this.updateData();
+  set hass(hass) { 
+    this._hass = hass; 
+    if (!this.content) this.renderSetup(); 
+    this.updateData(); 
   }
 
   translate(val) {
     if (!val) return '';
-    const key = val.toLowerCase().replace(/ /g, '_'); 
-    if (this.translations[key]) return this.translations[key];
-    return val.charAt(0).toUpperCase() + val.slice(1).replace(/_/g, ' ');
+    const lang = this.config.lang || 'en';
+    const key = val.toLowerCase().replace(/ /g, '_');
+    return this.translations[lang][key] || (val.charAt(0).toUpperCase() + val.slice(1).replace(/_/g, ' '));
   }
 
-  openMoreInfo(entityId) {
-    if (!entityId) return;
-    const event = new Event('hass-more-info', { bubbles: true, cancelable: true, composed: true });
-    event.detail = { entityId: entityId };
-    this.dispatchEvent(event);
+  openMoreInfo(entityId) { 
+    if (!entityId) return; 
+    const event = new Event('hass-more-info', { bubbles: true, composed: true }); 
+    event.detail = { entityId }; 
+    this.dispatchEvent(event); 
   }
 
   renderSetup() {
@@ -426,49 +479,75 @@
         .drum-info { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 70%; gap: 6px; }
         .drum-text { white-space: nowrap; font-weight: bold; text-shadow: 2px 2px 4px black, -1px -1px 4px black, 0 0 10px black; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
         .program-phase { color: #00ff00; font-size: clamp(10px, 2.5vw, 16px); }
-        .spin-speed { color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); }
-        .program-name { color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); }
+        .spin-speed, .program-name { color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); }
         .drying-step { color: #00bfff; font-size: clamp(8px, 2vw, 14px); }
-        .remaining-time { top: 5.5%; left: 48%; color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); transform: translate(-50%, -50%); max-width: 25%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+        .remaining-time { top: 5.5%; left: 48%; color: #ff8c00; font-size: clamp(10px, 2.5vw, 16px); max-width: 25%; text-align: center; }
         .btn-startstop { top: 5.5%; left: 61%; --mdc-icon-size: 1.3em; }
         .btn-power { top: 5.5%; left: 81.5%; --mdc-icon-size: 1.5em; }
         .door-lock { top: 42%; left: 18%; --mdc-icon-size: 1.6em; }
         .water-icon { top: 87%; left: 20%; color: #00bfff; --mdc-icon-size: 1.7em; }
-        .water-val { top: 91%; left: 20%; color: #ffffff; font-size: clamp(10px, 3vw, 15px); }
+        .water-val { top: 91%; left: 20%; color: #fff; font-size: clamp(10px, 3vw, 15px); }
         .energy-icon { top: 20%; left: 90%; color: #ff8c00; --mdc-icon-size: 1.7em; }
-        .energy-val { top: 24%; left: 90%; color: #ffffff; font-size: clamp(10px, 3vw, 15px); }
+        .energy-val { top: 24%; left: 90%; color: #fff; font-size: clamp(10px, 3vw, 15px); }
         .progress-ring { position: absolute; top: 43%; left: 50%; width: 55%; height: 55%; transform: translate(-50%, -50%) rotate(-90deg); pointer-events: none; }
         .ring-bg { fill: none; stroke: rgba(150, 150, 150, 0.4); stroke-width: 6; }
         .ring-fg { fill: none; stroke: #ff8c00; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
-        .twindos-container { display: block; }
         .twindos { position: absolute; height: 14%; width: 20%; border-radius: 6px; overflow: hidden; background: rgba(140, 140, 140, 0.4); border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
         .twindos-1 { top: 79%; left: 47%; }
         .twindos-2 { top: 79%; left: 73%; }
-        .twindos-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0, 191, 255, 0.8), rgba(0, 191, 255, 0.4)); transition: height 0.5s ease; z-index: 1; }
-        .twindos-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 2; padding: 4px 0; box-sizing: border-box;}
+        .twindos-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top,#00bfff,#007acc); transition: height 0.5s ease; z-index: 1; }
+        .twindos-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 2; padding: 4px 0; box-sizing: border-box; }
         .twindos-label { color: white; font-size: clamp(6px, 1.5vw, 12px); font-weight: bold; }
         .twindos-val { color: white; font-size: clamp(10px, 2.5vw, 16px); font-weight: bold; text-shadow: 1px 1px 3px black; }
-        .filter-alert { display: none; position: absolute; top: 84.5%; left: 27.5%; width: 41%; height: 15%; transform: translate(-50%, -50%); background: rgba(255, 0, 0, 0.7); border-radius: 8px; border: 2px solid red; color: white; font-weight: bold; font-size: clamp(10px, 2vw, 16px); display: flex; align-items: center; justify-content: center; text-align: center; text-shadow: 1px 1px 3px black; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: pulse 2s infinite; z-index: 5; cursor: pointer; }
-        @keyframes pulse { 0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } 50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); } 100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } }
+        .filter-alert { display: none; position: absolute; top: 84.5%; left: 27.5%; width: 41%; height: 15%; transform: translate(-50%,-50%); background: rgba(255,0,0,0.7); border-radius: 8px; border: 2px solid red; color: white; font-weight: bold; font-size: clamp(10px, 2vw, 16px); align-items: center; justify-content: center; text-align: center; text-shadow: 1px 1px 3px black; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: pulse 2s infinite; z-index: 5; cursor: pointer; }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px red; } 50% { box-shadow: 0 0 20px red; } 100% { box-shadow: 0 0 5px red; } }
       </style>
-
       <ha-card>
         <div class="card-container">
-          <img class="background" src="\${this.config.image}" />
-          <svg class="progress-ring" viewBox="0 0 100 100"><circle class="ring-bg" cx="50" cy="50" r="45"></circle><circle class="ring-fg" cx="50" cy="50" r="45"></circle></svg>
-          <div class="drum-info"><div class="drum-text program-phase"></div><div class="drum-text spin-speed"></div><div class="drum-text program-name"></div><div class="drum-text drying-step"></div></div>
-          <div class="text remaining-time"></div><ha-icon class="icon btn-startstop"></ha-icon><ha-icon class="icon btn-power" icon="mdi:power"></ha-icon><ha-icon class="icon door-lock"></ha-icon>
-          <div class="water-container"><div class="text water-val"></div><ha-icon class="icon water-icon" icon="mdi:water-outline"></ha-icon></div>
-          <div class="text energy-val"></div><ha-icon class="icon energy-icon" icon="mdi:lightning-bolt-outline"></ha-icon>
-          <div class="twindos-container">
-            <div class="twindos twindos-1"><div class="twindos-fill"></div><div class="twindos-content"><div class="twindos-label">ФАЗА 1</div><div class="twindos-val"></div></div></div>
-            <div class="twindos twindos-2"><div class="twindos-fill"></div><div class="twindos-content"><div class="twindos-label">ФАЗА 2</div><div class="twindos-val"></div></div></div>
-          </div>
-          <div class="filter-alert"><ha-icon icon="mdi:alert-circle-outline" style="margin-right: 5px;"></ha-icon>Очистите фильтр!</div>
+            <img class="background" src="\${this.config.image}" />
+            <svg class="progress-ring" viewBox="0 0 100 100">
+                <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="ring-fg" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <div class="drum-info">
+                <div class="drum-text program-phase"></div>
+                <div class="drum-text spin-speed"></div>
+                <div class="drum-text program-name"></div>
+                <div class="drum-text drying-step"></div>
+            </div>
+            <div class="text remaining-time"></div>
+            <ha-icon class="icon btn-startstop"></ha-icon>
+            <ha-icon class="icon btn-power" icon="mdi:power"></ha-icon>
+            <ha-icon class="icon door-lock"></ha-icon>
+            <div class="water-container">
+                <div class="text water-val"></div>
+                <ha-icon class="icon water-icon" icon="mdi:water-outline"></ha-icon>
+            </div>
+            <div class="text energy-val"></div>
+            <ha-icon class="icon energy-icon" icon="mdi:lightning-bolt-outline"></ha-icon>
+            <div class="twindos-container">
+                <div class="twindos twindos-1">
+                    <div class="twindos-fill"></div>
+                    <div class="twindos-content">
+                        <div class="twindos-label" id="td1-lbl"></div>
+                        <div class="twindos-val"></div>
+                    </div>
+                </div>
+                <div class="twindos twindos-2">
+                    <div class="twindos-fill"></div>
+                    <div class="twindos-content">
+                        <div class="twindos-label" id="td2-lbl"></div>
+                        <div class="twindos-val"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-alert" id="fltr-alert">
+                <ha-icon icon="mdi:alert-circle-outline" style="margin-right:5px;"></ha-icon>
+                <span id="fltr-txt"></span>
+            </div>
         </div>
-      </ha-card>
-    \`;
-
+      </ha-card>\`;
+    
     this.content = this.shadowRoot.querySelector('.card-container');
     this.shadowRoot.querySelector('.btn-power').addEventListener('click', () => this.togglePower());
     this.shadowRoot.querySelector('.btn-startstop').addEventListener('click', () => this.toggleStartStop());
@@ -480,363 +559,224 @@
     this.shadowRoot.querySelector('.energy-icon').addEventListener('click', () => this.openMoreInfo(this.entities.energy));
     this.shadowRoot.querySelector('.twindos-1').addEventListener('click', () => this.openMoreInfo(this.entities.td1));
     this.shadowRoot.querySelector('.twindos-2').addEventListener('click', () => this.openMoreInfo(this.entities.td2));
-    this.shadowRoot.querySelector('.filter-alert').addEventListener('click', () => {
-       const problemState = this._hass.states[this.entities.problem]?.state;
-       if (problemState === 'on') { this.openMoreInfo(this.entities.problem); } else { this.openMoreInfo(this.entities.notification); }
+    this.shadowRoot.querySelector('.filter-alert').addEventListener('click', () => { 
+        const p = this._hass.states[this.entities.problem]?.state; 
+        this.openMoreInfo(p === 'on' ? this.entities.problem : this.entities.notification); 
     });
   }
 
   updateData() {
-    const state = (ent) => this._hass.states[ent]?.state;
-    const isInvalid = (val) => val === undefined || val === null || val === '' || val === 'unknown' || val === 'unavailable';
+    const s = (e) => this._hass.states[e]?.state; 
+    const inv = (v) => v === undefined || v === null || v === '' || v === 'unknown' || v === 'unavailable';
+    const main = s(this.entities.base); 
+    if (main === undefined) return;
     
-    const mainState = state(this.entities.base);
-    if (mainState === undefined) {
-      this.setText('.program-name', 'Сенсор не найден');
-      this.shadowRoot.querySelector('.program-name').style.display = 'block';
-      this.shadowRoot.querySelector('.program-phase').style.display = 'none';
-      this.shadowRoot.querySelector('.spin-speed').style.display = 'none';
-      this.shadowRoot.querySelector('.drying-step').style.display = 'none';
-      this.shadowRoot.querySelector('.progress-ring').style.display = 'none';
-      if (this.shadowRoot.querySelector('.btn-power')) { this.shadowRoot.querySelector('.btn-power').style.color = '#ff0000'; }
-      return;
-    }
+    const pwr = s(this.entities.power); 
+    const isD = this.config.appliance_type === 'dryer'; 
+    const on = pwr === 'on' || (main && main !== 'off' && !inv(main));
     
-    const power = state(this.entities.power);
-    const door = state(this.entities.door);
-    const isDryer = this.config.appliance_type === 'dryer';
-    const isPoweredOn = power === 'on' || (mainState && mainState !== 'off' && !isInvalid(mainState));
+    this.shadowRoot.querySelector('.progress-ring').style.display = on ? 'block' : 'none';
+    const ph = s(this.entities.phase); 
+    const phT = (!on || ph === 'not_running') ? '' : (inv(ph) ? '-' : this.translate(ph));
+    this.setText('.program-phase', phT); 
     
-    this.shadowRoot.querySelector('.progress-ring').style.display = isPoweredOn ? 'block' : 'none';
+    const sp = s(this.entities.speed); 
+    this.setText('.spin-speed', on ? (inv(sp) ? '-' : \`\${sp} rpm\`) : '');
     
-    const phase = state(this.entities.phase);
-    const phaseText = (!isPoweredOn || phase === 'not_running') ? '' : (isInvalid(phase) ? '-' : this.translate(phase));
-    this.setText('.program-phase', phaseText);
-    this.shadowRoot.querySelector('.program-phase').style.display = phaseText ? 'block' : 'none';
+    const pr = s(this.entities.program); 
+    this.setText('.program-name', on ? (inv(pr) ? '-' : this.translate(pr)) : '');
     
-    const speed = state(this.entities.speed);
-    const spinText = isPoweredOn ? (isInvalid(speed) ? '-' : \`\${speed} rpm\`) : '';
-    this.setText('.spin-speed', spinText);
-    this.shadowRoot.querySelector('.spin-speed').style.display = spinText ? 'block' : 'none';
+    const ds = s(this.entities.drying_step); 
+    this.setText('.drying-step', (on && this._hass.states[this.entities.drying_step]) ? (inv(ds) ? '-' : this.translate(ds)) : '');
     
-    const prog = state(this.entities.program);
-    const progText = isPoweredOn ? (isInvalid(prog) ? '-' : this.translate(prog)) : '';
-    this.setText('.program-name', progText);
-    this.shadowRoot.querySelector('.program-name').style.display = progText ? 'block' : 'none';
+    const rem = s(this.entities.remaining); 
+    const lang = this.config.lang || 'en';
+    this.setText('.remaining-time', on ? (inv(rem) ? '-' : \`\${rem} \${this.translations[lang]['min']}\`) : '');
     
-    const dryingStep = state(this.entities.drying_step);
-    let stepText = '';
-    if (isPoweredOn && this._hass.states[this.entities.drying_step]) { stepText = isInvalid(dryingStep) ? '-' : this.translate(dryingStep); }
-    this.setText('.drying-step', stepText);
-    this.shadowRoot.querySelector('.drying-step').style.display = stepText ? 'block' : 'none';
-
-    const remain = state(this.entities.remaining);
-    this.setText('.remaining-time', isPoweredOn ? (isInvalid(remain) ? '-' : \`\${remain} мин\`) : '');
-
-    if (isDryer) {
-      this.shadowRoot.querySelector('.water-container').style.display = 'none';
+    if (isD) {
+      this.shadowRoot.querySelector('.water-container').style.display = 'none'; 
       this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
-      const isProblem = state(this.entities.problem) === 'on';
-      const isNotification = state(this.entities.notification) === 'on';
-      this.shadowRoot.querySelector('.filter-alert').style.display = (isPoweredOn && (isProblem || isNotification)) ? 'flex' : 'none';
+      const prob = s(this.entities.problem) === 'on' || s(this.entities.notification) === 'on';
+      this.shadowRoot.querySelector('.filter-alert').style.display = (on && prob) ? 'flex' : 'none';
+      this.shadowRoot.getElementById('fltr-txt').innerText = this.translations[lang]['clean_filter'];
     } else {
-      this.shadowRoot.querySelector('.water-container').style.display = 'block';
-      const waterEntity = this._hass.states[this.entities.water];
-      if (waterEntity) {
-          this.shadowRoot.querySelector('.water-icon').style.display = 'block';
-          this.setText('.water-val', isInvalid(waterEntity.state) ? '-' : \`\${waterEntity.state} L\`);
-      } else {
-          this.shadowRoot.querySelector('.water-icon').style.display = 'none';
-          this.setText('.water-val', '');
+      this.shadowRoot.querySelector('.water-container').style.display = 'block'; 
+      const wE = this._hass.states[this.entities.water]; 
+      if (wE) { 
+        this.shadowRoot.querySelector('.water-icon').style.display = 'block'; 
+        this.setText('.water-val', inv(wE.state) ? '-' : \`\${wE.state} L\`); 
       }
-      const td1State = state(this.entities.td1);
+      const t1 = s(this.entities.td1); 
       if (!this._hass.states[this.entities.td1]) {
         this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
       } else {
-        this.shadowRoot.querySelector('.twindos-container').style.display = 'block';
-        const td2State = state(this.entities.td2);
-        this.setText('.twindos-1 .twindos-val', isInvalid(td1State) ? '-' : \`\${parseFloat(td1State) || 0}%\`);
-        this.shadowRoot.querySelector('.twindos-1 .twindos-fill').style.height = isInvalid(td1State) ? '0%' : \`\${parseFloat(td1State) || 0}%\`;
-        this.setText('.twindos-2 .twindos-val', isInvalid(td2State) ? '-' : \`\${parseFloat(td2State) || 0}%\`);
-        this.shadowRoot.querySelector('.twindos-2 .twindos-fill').style.height = isInvalid(td2State) ? '0%' : \`\${parseFloat(td2State) || 0}%\`;
-      }
-      this.shadowRoot.querySelector('.filter-alert').style.display = 'none';
-    }
-
-    const energyEntity = this._hass.states[this.entities.energy];
-    if (energyEntity) {
-        this.shadowRoot.querySelector('.energy-icon').style.display = 'block';
-        this.setText('.energy-val', isInvalid(energyEntity.state) ? '-' : \`\${energyEntity.state} kWh\`);
-    } else {
-        this.shadowRoot.querySelector('.energy-icon').style.display = 'none';
-        this.setText('.energy-val', '');
-    }
-
-    const lockIcon = this.shadowRoot.querySelector('.door-lock');
-    if (lockIcon) {
-       lockIcon.setAttribute('icon', door === 'on' ? 'mdi:lock-open-variant' : 'mdi:lock');
-       lockIcon.style.color = door === 'on' ? '#cccccc' : '#00ff00';
-    }
-
-    const powerIcon = this.shadowRoot.querySelector('.btn-power');
-    if (powerIcon) { powerIcon.style.color = isPoweredOn ? '#00ff00' : '#ff8c00'; }
-
-    const playIcon = this.shadowRoot.querySelector('.btn-startstop');
-    if (playIcon) {
-       playIcon.style.display = isPoweredOn ? 'block' : 'none';
-       if (mainState === 'in_use') {
-         playIcon.setAttribute('icon', 'mdi:stop-circle-outline');
-         playIcon.style.color = '#ff0000';
-       } else {
-         playIcon.setAttribute('icon', 'mdi:play-circle-outline');
-         playIcon.style.color = '#00ff00';
-       }
-    }
-
-    if (isPoweredOn) {
-      const elapsed = parseFloat(state(this.entities.elapsed)) || 0;
-      const remainTime = parseFloat(state(this.entities.remaining)) || 0;
-      const total = elapsed + remainTime;
-      const progress = total > 0 ? (elapsed / total) : 0;
-      const circumference = 2 * Math.PI * 45;
-      const ringFg = this.shadowRoot.querySelector('.ring-fg');
-      if (ringFg) {
-         ringFg.style.strokeDasharray = \`\${circumference}\`;
-         ringFg.style.strokeDashoffset = circumference - (progress * circumference);
+        this.shadowRoot.querySelector('.twindos-container').style.display = 'block'; 
+        const t2 = s(this.entities.td2);
+        this.shadowRoot.getElementById('td1-lbl').innerText = this.translations[lang]['phase1'];
+        this.shadowRoot.getElementById('td2-lbl').innerText = this.translations[lang]['phase2'];
+        this.setText('.twindos-1 .twindos-val', inv(t1) ? '-' : \`\${parseFloat(t1) || 0}%\`); 
+        this.shadowRoot.querySelector('.twindos-1 .twindos-fill').style.height = inv(t1) ? '0%' : \`\${parseFloat(t1) || 0}%\`;
+        this.setText('.twindos-2 .twindos-val', inv(t2) ? '-' : \`\${parseFloat(t2) || 0}%\`); 
+        this.shadowRoot.querySelector('.twindos-2 .twindos-fill').style.height = inv(t2) ? '0%' : \`\${parseFloat(t2) || 0}%\`;
       }
     }
+    const eE = this._hass.states[this.entities.energy]; 
+    if (eE) { 
+        this.shadowRoot.querySelector('.energy-icon').style.display = 'block'; 
+        this.setText('.energy-val', inv(eE.state) ? '-' : \`\${eE.state} kWh\`); 
+    }
+    const door = s(this.entities.door); 
+    const lock = this.shadowRoot.querySelector('.door-lock'); 
+    if (lock) { 
+        lock.setAttribute('icon', door === 'on' ? 'mdi:lock-open-variant' : 'mdi:lock'); 
+        lock.style.color = door === 'on' ? '#ccc' : '#0f0'; 
+    }
+    const pI = this.shadowRoot.querySelector('.btn-power'); 
+    if (pI) pI.style.color = on ? '#0f0' : '#ff8c00';
+    const plI = this.shadowRoot.querySelector('.btn-startstop'); 
+    if (plI) { 
+        plI.style.display = on ? 'block' : 'none'; 
+        if (main === 'in_use') { 
+            plI.setAttribute('icon', 'mdi:stop-circle-outline'); 
+            plI.style.color = '#f00'; 
+        } else { 
+            plI.setAttribute('icon', 'mdi:play-circle-outline'); 
+            plI.style.color = '#0f0'; 
+        } 
+    }
+    if (on) { 
+        const el = parseFloat(s(this.entities.elapsed)) || 0; 
+        const r = parseFloat(s(this.entities.remaining)) || 0; 
+        const prog = (el + r) > 0 ? (el / (el + r)) : 0; 
+        const circ = 2 * Math.PI * 45; 
+        const fg = this.shadowRoot.querySelector('.ring-fg'); 
+        if (fg) { 
+            fg.style.strokeDasharray = \`\${circ}\`; 
+            fg.style.strokeDashoffset = circ - (prog * circ); 
+        } 
+    }
   }
-
-  setText(selector, text) { const el = this.shadowRoot.querySelector(selector); if (el) el.innerText = text; }
-
-  togglePower() {
-    const state = this._hass.states[this.entities.power]?.state;
-    if (state) { this._hass.callService('switch', state === 'on' ? 'turn_off' : 'turn_on', { entity_id: this.entities.power }); }
+  setText(s, t) { const e = this.shadowRoot.querySelector(s); if (e) e.innerText = t; }
+  togglePower() { 
+      const s = this._hass.states[this.entities.power]?.state; 
+      if (s) this._hass.callService('switch', s === 'on' ? 'turn_off' : 'turn_on', { entity_id: this.entities.power }); 
   }
-
-  toggleStartStop() {
-    const state = this._hass.states[this.entities.base]?.state;
-    const btn = state === 'in_use' ? this.entities.stop : this.entities.start;
-    if (this._hass.states[btn]) { this._hass.callService('button', 'press', { entity_id: btn }); }
+  toggleStartStop() { 
+      const s = this._hass.states[this.entities.base]?.state; 
+      const b = s === 'in_use' ? this.entities.stop : this.entities.start; 
+      if (this._hass.states[b]) this._hass.callService('button', 'press', { entity_id: b }); 
   }
-
   getCardSize() { return 4; }
 }
-
 customElements.define('miele-appliance-card', MieleApplianceCard);
 window.customCards = window.customCards || [];
-window.customCards.push({
-  type: "miele-appliance-card",
-  name: "Miele Appliance Card",
-  preview: false,
-  description: "Красивая кастомная карточка для стиральных машин и сушилок Miele"
-});`;
+window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance Card", preview: false, description: "Мультиязычная карточка для техники Miele" });`;
 
     const translations = {
         ru: {
-            title: "Генератор карточки Miele (Home Assistant)",
-            instructions_title: "Установка Custom Card:",
-            step1: "Скопируйте JS код плагина (Блок 1) и сохраните его в файл <code>config/www/miele/miele-appliance-card.js</code>.",
-            step2: "В Home Assistant зайдите в <i>Настройки -> Панели управления -> Ресурсы</i>. Добавьте путь <code>/local/miele/miele-appliance-card.js</code> как <b>Модуль JavaScript</b>.",
-            step3: "Положите картинки вашей техники (<b>washer.webp</b> и/или <b>dryer.webp</b>) в ту же папку <code>config/www/miele/</code>.",
-            step4: "Очистите кэш браузера (Cmd+Shift+R или Ctrl+F5) и добавьте карточку на дашборд (Блок 2).",
-            type_label: "Тип машины:",
-            opt_washer: "Стиральная машина (с TwinDos)",
-            opt_dryer: "Сушильная машина",
-            entity_label: "ID сущности (префикс):",
-            entity_hint: "Например, если датчик <code>sensor.washer_remaining_time</code>, префикс — <b>washer</b>.",
-            preview_title: "Статичное превью фона:",
-            preview_hint: "Внимание! Здесь показан только пустой фон картинки. Все надписи, статусы, кольцо прогресса и уровни TwinDos генерируются автоматически кодом плагина внутри Home Assistant. Это нормально, что картинка пустая.",
-            yaml_label: "Блок 2: Код карточки для Дашборда (Вручную / Manual):",
-            btn_copy_yaml: "📋 Скопировать YAML",
-            js_label: "Блок 1: Код плагина (Сохраните в miele-appliance-card.js):",
-            btn_copy_js: "📋 Скопировать JS код",
-            btn_copied: "✅ Скопировано!",
-            adv_btn: "⚙️ Продвинутые настройки (Сенсоры)",
-            adv_hint: "Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (сгенерированных интеграцией). Серым текстом показано то, что карточка будет искать по умолчанию.",
-            adv_general: "Общие сенсоры:",
-            adv_washer: "Только для стиральной машины:",
-            adv_dryer: "Только для сушильной машины:"
+            title: "Miele Card Generator V3.1",
+            label_washer_prefix: "Префикс Стиралки:",
+            label_dryer_prefix: "Префикс Сушилки:",
+            label_yaml_washer: "Блок 1: YAML для Стиральной машины",
+            label_yaml_dryer: "Блок 2: YAML для Сушильной машины",
+            btn_adv: "⚙️ Продвинутые настройки (Сенсоры)",
+            hint_preview: "Это только фон. Данные появятся в Home Assistant.",
+            adv_hint: "Используйте, если названия датчиков отличаются от стандартных. Оставьте пустыми для авто-генерации."
         },
         en: {
-            title: "Miele Custom Card Generator (Home Assistant)",
-            instructions_title: "Custom Card Installation:",
-            step1: "Copy the JS plugin code (Block 1) and save it to <code>config/www/miele/miele-appliance-card.js</code>.",
-            step2: "In Home Assistant, go to <i>Settings -> Dashboards -> Resources</i>. Add <code>/local/miele/miele-appliance-card.js</code> as a <b>JavaScript Module</b>.",
-            step3: "Upload your appliance images (<b>washer.webp</b> and/or <b>dryer.webp</b>) into the same <code>config/www/miele/</code> folder.",
-            step4: "Clear browser cache (Cmd+Shift+R or Ctrl+F5) and add the YAML card to your dashboard (Block 2).",
-            type_label: "Appliance Type:",
-            opt_washer: "Washing Machine (with TwinDos)",
-            opt_dryer: "Tumble Dryer",
-            entity_label: "Entity ID (prefix):",
-            entity_hint: "For example, if the sensor is <code>sensor.washer_remaining_time</code>, the prefix is <b>washer</b>.",
-            preview_title: "Static Background Preview:",
-            preview_hint: "Note: This is just a blank background image. All labels, statuses, progress rings, and TwinDos levels are dynamically rendered by the plugin code inside Home Assistant. It is perfectly normal for this preview to be empty.",
-            yaml_label: "Block 2: Dashboard Card Code (Manual):",
-            btn_copy_yaml: "📋 Copy YAML",
-            js_label: "Block 1: Plugin Code (Save to miele-appliance-card.js):",
-            btn_copy_js: "📋 Copy JS Code",
-            btn_copied: "✅ Copied!",
-            adv_btn: "⚙️ Advanced Settings (Sensors)",
-            adv_hint: "Fill these fields ONLY if your sensor names differ from the default ones generated by the integration. Grey text shows what the card expects by default.",
-            adv_general: "General Sensors:",
-            adv_washer: "Washer Only Sensors:",
-            adv_dryer: "Dryer Only Sensors:"
+            title: "Miele Card Generator V3.1",
+            label_washer_prefix: "Washer Prefix:",
+            label_dryer_prefix: "Dryer Prefix:",
+            label_yaml_washer: "Block 1: YAML for Washing Machine",
+            label_yaml_dryer: "Block 2: YAML for Tumble Dryer",
+            btn_adv: "⚙️ Advanced Settings (Sensors)",
+            hint_preview: "Background only. Real data in Home Assistant.",
+            adv_hint: "Use if your sensors have custom names. Leave blank for auto-generation."
         },
         de: {
-            title: "Miele Custom Card Generator (Home Assistant)",
-            instructions_title: "Custom Card Installation:",
-            step1: "Kopieren Sie den JS-Code (Block 1) und speichern Sie ihn unter <code>config/www/miele/miele-appliance-card.js</code>.",
-            step2: "Gehen Sie in Home Assistant zu <i>Einstellungen -> Dashboards -> Ressourcen</i>. Fügen Sie <code>/local/miele/miele-appliance-card.js</code> als <b>JavaScript-Modul</b> hinzu.",
-            step3: "Laden Sie Ihre Gerätebilder (<b>washer.webp</b> und/oder <b>dryer.webp</b>) in denselben Ordner <code>config/www/miele/</code> hoch.",
-            step4: "Leeren Sie den Browser-Cache (Cmd+Shift+R) und fügen Sie die YAML-Karte zu Ihrem Dashboard hinzu (Block 2).",
-            type_label: "Gerätetyp:",
-            opt_washer: "Waschmaschine (mit TwinDos)",
-            opt_dryer: "Trockner",
-            entity_label: "Entitäts-ID (Präfix):",
-            entity_hint: "Beispiel: Wenn der Sensor <code>sensor.washer_remaining_time</code> heißt, ist das Präfix <b>washer</b>.",
-            preview_title: "Statische Hintergrundvorschau:",
-            preview_hint: "Achtung: Dies zeigt nur das leere Hintergrundbild. Alle Beschriftungen, Statusanzeigen, der Fortschrittsring und TwinDos werden durch den Plugin-Code in Home Assistant dynamisch gerendert. Es ist normal, dass dieses Bild leer ist.",
-            yaml_label: "Block 2: Dashboard Karten-Code (Manuell):",
-            btn_copy_yaml: "📋 YAML kopieren",
-            js_label: "Block 1: Plugin-Code (Speichern in miele-appliance-card.js):",
-            btn_copy_js: "📋 JS Code kopieren",
-            btn_copied: "✅ Kopiert!",
-            adv_btn: "⚙️ Erweiterte Einstellungen (Sensoren)",
-            adv_hint: "Füllen Sie diese Felder NUR aus, wenn Ihre Sensornamen von den Standardwerten abweichen. Grauer Text zeigt, was die Karte standardmäßig erwartet.",
-            adv_general: "Allgemeine Sensoren:",
-            adv_washer: "Nur für Waschmaschinen:",
-            adv_dryer: "Nur für Trockner:"
+            title: "Miele Card Generator V3.1",
+            label_washer_prefix: "Waschmaschine Präfix:",
+            label_dryer_prefix: "Trockner Präfix:",
+            label_yaml_washer: "Block 1: YAML für Waschmaschine",
+            label_yaml_dryer: "Block 2: YAML для Trockner",
+            btn_adv: "⚙️ Erweiterte Einstellungen (Sensoren)",
+            hint_preview: "Nur Hintergrund. Daten in Home Assistant.",
+            adv_hint: "Verwenden, wenn Sensoren benutzerdefinierte Namen haben. Leer lassen für Automatik."
         }
     };
 
-    let currentLang = 'ru';
+    let selectedLang = 'ru';
 
     function changeLang(lang) {
-        currentLang = lang;
+        selectedLang = lang;
+        document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+        document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+        
         const t = translations[lang];
-
-        document.getElementById('btn-ru').classList.remove('active');
-        document.getElementById('btn-en').classList.remove('active');
-        document.getElementById('btn-de').classList.remove('active');
-        document.getElementById('btn-' + lang).classList.add('active');
-
         document.getElementById('ui_title').innerText = t.title;
-        document.getElementById('ui_instructions_title').innerText = t.instructions_title;
-        document.getElementById('ui_step1').innerHTML = t.step1;
-        document.getElementById('ui_step2').innerHTML = t.step2;
-        document.getElementById('ui_step3').innerHTML = t.step3;
-        document.getElementById('ui_step4').innerHTML = t.step4;
-        document.getElementById('ui_type_label').innerText = t.type_label;
-        document.getElementById('ui_opt_washer').innerText = t.opt_washer;
-        document.getElementById('ui_opt_dryer').innerText = t.opt_dryer;
-        document.getElementById('ui_entity_label').innerText = t.entity_label;
-        document.getElementById('ui_entity_hint').innerHTML = t.entity_hint;
-        document.getElementById('ui_preview_title').innerText = t.preview_title;
-        document.getElementById('ui_preview_hint').innerText = t.preview_hint;
-        document.getElementById('ui_yaml_label').innerText = t.yaml_label;
-        document.getElementById('ui_btn_copy_yaml').innerText = t.btn_copy_yaml;
-        document.getElementById('ui_js_label').innerText = t.js_label;
-        document.getElementById('ui_btn_copy_js').innerText = t.btn_copy_js;
-        document.getElementById('ui_adv_btn').innerText = t.adv_btn;
+        document.getElementById('ui_label_washer_prefix').innerText = t.label_washer_prefix;
+        document.getElementById('ui_label_dryer_prefix').innerText = t.label_dryer_prefix;
+        document.getElementById('ui_label_yaml_washer').innerText = t.label_yaml_washer;
+        document.getElementById('ui_label_yaml_dryer').innerText = t.label_yaml_dryer;
+        document.getElementById('ui_adv_btn').innerText = t.btn_adv;
+        document.getElementById('ui_preview_hint').innerText = t.hint_preview;
         document.getElementById('ui_adv_hint').innerText = t.adv_hint;
-        document.getElementById('ui_adv_general').innerText = t.adv_general;
-        document.getElementById('ui_adv_washer').innerText = t.adv_washer;
-        document.getElementById('ui_adv_dryer').innerText = t.adv_dryer;
-
-        updateUI();
+        
+        generateAll();
     }
 
     function toggleAdvanced() {
-        const panel = document.getElementById("advancedPanel");
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
+        const p = document.getElementById("advancedPanel");
+        p.style.display = p.style.display === "block" ? "none" : "block";
     }
 
-    function updateUI() {
-        let type = document.getElementById("applianceType").value;
-        let prefix = document.getElementById("entityId").value.trim() || "washer";
-        let devName = prefix.split('.').pop(); 
-
-        // Обновление превью картинки
-        const imgElement = document.getElementById("previewImg");
-        imgElement.src = type === 'washer' ? 'washer.webp' : 'dryer.webp';
-
-        // Обновление подсказок (placeholders)
-        document.getElementById('adv_power').placeholder = `switch.${devName}_power`;
-        document.getElementById('adv_door').placeholder = `binary_sensor.${devName}_door`;
-        document.getElementById('adv_program').placeholder = `sensor.${prefix}_program`;
-        document.getElementById('adv_phase').placeholder = `sensor.${prefix}_program_phase`;
-        document.getElementById('adv_remain').placeholder = `sensor.${prefix}_remaining_time`;
-        document.getElementById('adv_elapsed').placeholder = `sensor.${prefix}_elapsed_time`;
-        document.getElementById('adv_energy').placeholder = `sensor.${prefix}_energy_consumption`;
-        document.getElementById('adv_start').placeholder = `button.${devName}_zapustit`;
-        document.getElementById('adv_stop').placeholder = `button.${devName}_ostanovit`;
-        
-        document.getElementById('adv_speed').placeholder = `sensor.${prefix}_spin_speed`;
-        document.getElementById('adv_water').placeholder = `sensor.${prefix}_water_consumption`;
-        document.getElementById('adv_td1').placeholder = `sensor.${prefix}_twindos_1_level`;
-        document.getElementById('adv_td2').placeholder = `sensor.${prefix}_twindos_2_level`;
-        
-        document.getElementById('adv_drying').placeholder = `sensor.${prefix}_drying_step`;
-
-        generateYAML();
+    function updatePreviewImg() {
+        const type = document.getElementById("previewType").value;
+        document.getElementById("previewImg").src = type === 'washer' ? 'washer.webp' : 'dryer.webp';
     }
 
-    function generateYAML() {
-        let entityPrefix = document.getElementById("entityId").value.trim() || "washer";
-        let type = document.getElementById("applianceType").value;
-        let image = type === 'washer' ? 'washer.webp' : 'dryer.webp';
+    function generateAll() {
+        const wPrefix = document.getElementById("prefixWasher").value.trim() || "washer";
+        const dPrefix = document.getElementById("prefixDryer").value.trim() || "dryer";
 
-        let yaml = `type: custom:miele-appliance-card\nentity: sensor.${entityPrefix}\nappliance_type: ${type}\nimage: /local/miele/${image}`;
-
-        const advancedInputs = [
-            { id: 'adv_power', key: 'power_entity' },
-            { id: 'adv_door', key: 'door_entity' },
-            { id: 'adv_program', key: 'program_entity' },
-            { id: 'adv_phase', key: 'phase_entity' },
-            { id: 'adv_remain', key: 'remaining_entity' },
-            { id: 'adv_elapsed', key: 'elapsed_entity' },
-            { id: 'adv_energy', key: 'energy_entity' },
-            { id: 'adv_start', key: 'start_entity' },
-            { id: 'adv_stop', key: 'stop_entity' },
-            { id: 'adv_speed', key: 'speed_entity' },
-            { id: 'adv_water', key: 'water_entity' },
-            { id: 'adv_td1', key: 'td1_entity' },
-            { id: 'adv_td2', key: 'td2_entity' },
-            { id: 'adv_drying', key: 'drying_step_entity' }
+        // Washer YAML
+        let wYaml = `type: custom:miele-appliance-card\nentity: sensor.${wPrefix}\nappliance_type: washer\nlang: ${selectedLang}\nimage: /local/miele/washer.webp`;
+        const wAdv = [
+            { id: 'w_adv_power', k: 'power_entity' }, { id: 'w_adv_door', k: 'door_entity' },
+            { id: 'w_adv_water', k: 'water_entity' }, { id: 'w_adv_td1', k: 'td1_entity' }
         ];
-
-        advancedInputs.forEach(item => {
-            let el = document.getElementById(item.id);
-            if (el && el.value.trim() !== '') {
-                yaml += `\n${item.key}: ${el.value.trim()}`;
-            }
+        wAdv.forEach(i => { 
+            const val = document.getElementById(i.id).value.trim();
+            if(val) wYaml += `\n${i.k}: ${val}`; 
         });
+        document.getElementById("yamlWasher").value = wYaml;
 
-        document.getElementById("yamlOutput").value = yaml;
+        // Dryer YAML
+        let dYaml = `type: custom:miele-appliance-card\nentity: sensor.${dPrefix}\nappliance_type: dryer\nlang: ${selectedLang}\nimage: /local/miele/dryer.webp`;
+        const dAdv = [
+            { id: 'd_adv_power', k: 'power_entity' }, { id: 'd_adv_door', k: 'door_entity' },
+            { id: 'd_adv_drying', k: 'drying_step_entity' }, { id: 'd_adv_problem', k: 'problem_entity' }
+        ];
+        dAdv.forEach(i => { 
+            const val = document.getElementById(i.id).value.trim();
+            if(val) dYaml += `\n${i.k}: ${val}`; 
+        });
+        document.getElementById("yamlDryer").value = dYaml;
     }
 
-    function copyToClipboard(elementId, btn) {
-        let textarea = document.getElementById(elementId);
-        textarea.select();
+    function copyToClipboard(id, btn) {
+        document.getElementById(id).select();
         document.execCommand("copy");
-        
-        let originalText = translations[currentLang][elementId === 'yamlOutput' ? 'btn_copy_yaml' : 'btn_copy_js'];
-        btn.innerText = translations[currentLang].btn_copied;
-        btn.style.backgroundColor = "#2e7d32";
-        
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.style.backgroundColor = "#4caf50";
-        }, 2000);
+        const oldText = btn.innerText;
+        btn.innerText = "✅ Done!";
+        setTimeout(() => btn.innerText = oldText, 2000);
     }
 
-    window.onload = function() {
+    window.onload = () => {
         document.getElementById("jsOutput").value = pluginCode;
         changeLang('ru');
-        updateUI();
     };
 </script>
-
 </body>
 </html>
