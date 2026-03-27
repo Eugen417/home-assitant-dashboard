@@ -150,6 +150,17 @@
             margin-top: 0;
             margin-bottom: 15px;
         }
+        .adv-section-title {
+            font-weight: bold;
+            color: #0277bd;
+            border-bottom: 1px solid #ddd;
+            margin: 20px 0 10px 0;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+        .adv-section-title:first-of-type {
+            margin-top: 0;
+        }
         .grid-2-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -239,7 +250,7 @@
 
             <div class="form-group">
                 <label for="applianceType" id="ui_type_label">Тип машины:</label>
-                <select id="applianceType" onchange="generateYAML(); updatePreview();">
+                <select id="applianceType" onchange="updateUI()">
                     <option value="washer" id="ui_opt_washer">Стиральная машина (с TwinDos)</option>
                     <option value="dryer" id="ui_opt_dryer">Сушильная машина</option>
                 </select>
@@ -250,28 +261,38 @@
                 <p style="margin-top: 0; font-size: 14px; color: #666;" id="ui_entity_hint">
                     Например, если датчик называется <code>sensor.washer_remaining_time</code>, префикс — <b>washer</b>.
                 </p>
-                <input type="text" id="entityId" value="stiralnaia_mashina" onkeyup="generateYAML()">
+                <input type="text" id="entityId" value="stiralnaia_mashina" onkeyup="updateUI()">
             </div>
 
             <div class="form-group">
                 <button type="button" class="toggle-btn" onclick="toggleAdvanced()" id="ui_adv_btn">⚙️ Продвинутые настройки (Сенсоры)</button>
                 <div class="advanced-panel" id="advancedPanel">
-                    <p class="adv-hint" id="ui_adv_hint">Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных. Оставьте пустыми для авто-генерации.</p>
+                    <p class="adv-hint" id="ui_adv_hint">Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (сгенерированных интеграцией). Серым текстом показано то, что карточка будет искать по умолчанию.</p>
+                    
+                    <div class="adv-section-title" id="ui_adv_general">Общие сенсоры:</div>
                     <div class="grid-2-col">
-                        <div><label>Power (Вкл/Выкл):</label><input type="text" id="adv_power" placeholder="switch.washer_power" onkeyup="generateYAML()"></div>
-                        <div><label>Door (Дверца):</label><input type="text" id="adv_door" placeholder="binary_sensor.washer_door" onkeyup="generateYAML()"></div>
-                        <div><label>Program (Программа):</label><input type="text" id="adv_program" placeholder="sensor.washer_program" onkeyup="generateYAML()"></div>
-                        <div><label>Phase (Фаза):</label><input type="text" id="adv_phase" placeholder="sensor.washer_program_phase" onkeyup="generateYAML()"></div>
-                        <div><label>Time Remaining:</label><input type="text" id="adv_remain" placeholder="sensor.washer_remaining_time" onkeyup="generateYAML()"></div>
-                        <div><label>Time Elapsed:</label><input type="text" id="adv_elapsed" placeholder="sensor.washer_elapsed_time" onkeyup="generateYAML()"></div>
-                        <div><label>Spin Speed:</label><input type="text" id="adv_speed" placeholder="sensor.washer_spin_speed" onkeyup="generateYAML()"></div>
-                        <div><label>Drying Step:</label><input type="text" id="adv_drying" placeholder="sensor.washer_drying_step" onkeyup="generateYAML()"></div>
-                        <div><label>Water Consumed:</label><input type="text" id="adv_water" placeholder="sensor.washer_water_consumption" onkeyup="generateYAML()"></div>
-                        <div><label>Energy Consumed:</label><input type="text" id="adv_energy" placeholder="sensor.washer_energy_consumption" onkeyup="generateYAML()"></div>
-                        <div><label>TwinDos 1 Level:</label><input type="text" id="adv_td1" placeholder="sensor.washer_twindos_1_level" onkeyup="generateYAML()"></div>
-                        <div><label>TwinDos 2 Level:</label><input type="text" id="adv_td2" placeholder="sensor.washer_twindos_2_level" onkeyup="generateYAML()"></div>
-                        <div><label>Start Button:</label><input type="text" id="adv_start" placeholder="button.washer_start" onkeyup="generateYAML()"></div>
-                        <div><label>Stop Button:</label><input type="text" id="adv_stop" placeholder="button.washer_stop" onkeyup="generateYAML()"></div>
+                        <div><label>Power (Вкл/Выкл):</label><input type="text" id="adv_power" onkeyup="generateYAML()"></div>
+                        <div><label>Door (Дверца):</label><input type="text" id="adv_door" onkeyup="generateYAML()"></div>
+                        <div><label>Program (Программа):</label><input type="text" id="adv_program" onkeyup="generateYAML()"></div>
+                        <div><label>Phase (Фаза):</label><input type="text" id="adv_phase" onkeyup="generateYAML()"></div>
+                        <div><label>Time Remaining:</label><input type="text" id="adv_remain" onkeyup="generateYAML()"></div>
+                        <div><label>Time Elapsed:</label><input type="text" id="adv_elapsed" onkeyup="generateYAML()"></div>
+                        <div><label>Energy Consumed:</label><input type="text" id="adv_energy" onkeyup="generateYAML()"></div>
+                        <div><label>Start Button:</label><input type="text" id="adv_start" onkeyup="generateYAML()"></div>
+                        <div><label>Stop Button:</label><input type="text" id="adv_stop" onkeyup="generateYAML()"></div>
+                    </div>
+
+                    <div class="adv-section-title" id="ui_adv_washer">Только для стиральной машины:</div>
+                    <div class="grid-2-col">
+                        <div><label>Spin Speed (Отжим):</label><input type="text" id="adv_speed" onkeyup="generateYAML()"></div>
+                        <div><label>Water Consumed:</label><input type="text" id="adv_water" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 1 Level:</label><input type="text" id="adv_td1" onkeyup="generateYAML()"></div>
+                        <div><label>TwinDos 2 Level:</label><input type="text" id="adv_td2" onkeyup="generateYAML()"></div>
+                    </div>
+
+                    <div class="adv-section-title" id="ui_adv_dryer">Только для сушильной машины:</div>
+                    <div class="grid-2-col">
+                        <div><label>Drying Step (Этап сушки):</label><input type="text" id="adv_drying" onkeyup="generateYAML()"></div>
                     </div>
                 </div>
             </div>
@@ -632,7 +653,10 @@ window.customCards.push({
             btn_copy_js: "📋 Скопировать JS код",
             btn_copied: "✅ Скопировано!",
             adv_btn: "⚙️ Продвинутые настройки (Сенсоры)",
-            adv_hint: "Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (генерируемых интеграцией). Оставьте пустыми для авто-генерации."
+            adv_hint: "Заполняйте эти поля, ТОЛЬКО если названия ваших сенсоров отличаются от стандартных (сгенерированных интеграцией). Серым текстом показано то, что карточка будет искать по умолчанию.",
+            adv_general: "Общие сенсоры:",
+            adv_washer: "Только для стиральной машины:",
+            adv_dryer: "Только для сушильной машины:"
         },
         en: {
             title: "Miele Custom Card Generator (Home Assistant)",
@@ -654,7 +678,10 @@ window.customCards.push({
             btn_copy_js: "📋 Copy JS Code",
             btn_copied: "✅ Copied!",
             adv_btn: "⚙️ Advanced Settings (Sensors)",
-            adv_hint: "Fill these fields ONLY if your sensor names differ from the default ones generated by the integration. Leave blank for auto-generation."
+            adv_hint: "Fill these fields ONLY if your sensor names differ from the default ones generated by the integration. Grey text shows what the card expects by default.",
+            adv_general: "General Sensors:",
+            adv_washer: "Washer Only Sensors:",
+            adv_dryer: "Dryer Only Sensors:"
         },
         de: {
             title: "Miele Custom Card Generator (Home Assistant)",
@@ -676,7 +703,10 @@ window.customCards.push({
             btn_copy_js: "📋 JS Code kopieren",
             btn_copied: "✅ Kopiert!",
             adv_btn: "⚙️ Erweiterte Einstellungen (Sensoren)",
-            adv_hint: "Füllen Sie diese Felder NUR aus, wenn Ihre Sensornamen von den Standardwerten der Integration abweichen. Für die automatische Generierung leer lassen."
+            adv_hint: "Füllen Sie diese Felder NUR aus, wenn Ihre Sensornamen von den Standardwerten abweichen. Grauer Text zeigt, was die Karte standardmäßig erwartet.",
+            adv_general: "Allgemeine Sensoren:",
+            adv_washer: "Nur für Waschmaschinen:",
+            adv_dryer: "Nur für Trockner:"
         }
     };
 
@@ -710,8 +740,11 @@ window.customCards.push({
         document.getElementById('ui_btn_copy_js').innerText = t.btn_copy_js;
         document.getElementById('ui_adv_btn').innerText = t.adv_btn;
         document.getElementById('ui_adv_hint').innerText = t.adv_hint;
+        document.getElementById('ui_adv_general').innerText = t.adv_general;
+        document.getElementById('ui_adv_washer').innerText = t.adv_washer;
+        document.getElementById('ui_adv_dryer').innerText = t.adv_dryer;
 
-        generateYAML();
+        updateUI();
     }
 
     function toggleAdvanced() {
@@ -719,10 +752,34 @@ window.customCards.push({
         panel.style.display = panel.style.display === "block" ? "none" : "block";
     }
 
-    function updatePreview() {
-        const type = document.getElementById("applianceType").value;
+    function updateUI() {
+        let type = document.getElementById("applianceType").value;
+        let prefix = document.getElementById("entityId").value.trim() || "washer";
+        let devName = prefix.split('.').pop(); 
+
+        // Обновление превью картинки
         const imgElement = document.getElementById("previewImg");
         imgElement.src = type === 'washer' ? 'washer.webp' : 'dryer.webp';
+
+        // Обновление подсказок (placeholders)
+        document.getElementById('adv_power').placeholder = `switch.${devName}_power`;
+        document.getElementById('adv_door').placeholder = `binary_sensor.${devName}_door`;
+        document.getElementById('adv_program').placeholder = `sensor.${prefix}_program`;
+        document.getElementById('adv_phase').placeholder = `sensor.${prefix}_program_phase`;
+        document.getElementById('adv_remain').placeholder = `sensor.${prefix}_remaining_time`;
+        document.getElementById('adv_elapsed').placeholder = `sensor.${prefix}_elapsed_time`;
+        document.getElementById('adv_energy').placeholder = `sensor.${prefix}_energy_consumption`;
+        document.getElementById('adv_start').placeholder = `button.${devName}_zapustit`;
+        document.getElementById('adv_stop').placeholder = `button.${devName}_ostanovit`;
+        
+        document.getElementById('adv_speed').placeholder = `sensor.${prefix}_spin_speed`;
+        document.getElementById('adv_water').placeholder = `sensor.${prefix}_water_consumption`;
+        document.getElementById('adv_td1').placeholder = `sensor.${prefix}_twindos_1_level`;
+        document.getElementById('adv_td2').placeholder = `sensor.${prefix}_twindos_2_level`;
+        
+        document.getElementById('adv_drying').placeholder = `sensor.${prefix}_drying_step`;
+
+        generateYAML();
     }
 
     function generateYAML() {
@@ -739,20 +796,20 @@ window.customCards.push({
             { id: 'adv_phase', key: 'phase_entity' },
             { id: 'adv_remain', key: 'remaining_entity' },
             { id: 'adv_elapsed', key: 'elapsed_entity' },
-            { id: 'adv_speed', key: 'speed_entity' },
-            { id: 'adv_drying', key: 'drying_step_entity' },
-            { id: 'adv_water', key: 'water_entity' },
             { id: 'adv_energy', key: 'energy_entity' },
+            { id: 'adv_start', key: 'start_entity' },
+            { id: 'adv_stop', key: 'stop_entity' },
+            { id: 'adv_speed', key: 'speed_entity' },
+            { id: 'adv_water', key: 'water_entity' },
             { id: 'adv_td1', key: 'td1_entity' },
             { id: 'adv_td2', key: 'td2_entity' },
-            { id: 'adv_start', key: 'start_entity' },
-            { id: 'adv_stop', key: 'stop_entity' }
+            { id: 'adv_drying', key: 'drying_step_entity' }
         ];
 
         advancedInputs.forEach(item => {
-            let val = document.getElementById(item.id).value.trim();
-            if (val) {
-                yaml += `\n${item.key}: ${val}`;
+            let el = document.getElementById(item.id);
+            if (el && el.value.trim() !== '') {
+                yaml += `\n${item.key}: ${el.value.trim()}`;
             }
         });
 
@@ -777,7 +834,7 @@ window.customCards.push({
     window.onload = function() {
         document.getElementById("jsOutput").value = pluginCode;
         changeLang('ru');
-        updatePreview();
+        updateUI();
     };
 </script>
 
