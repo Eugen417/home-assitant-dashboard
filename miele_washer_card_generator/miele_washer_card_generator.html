@@ -634,7 +634,6 @@
     const on = pwr === 'on' || (main && main !== 'off' && !inv(main));
     
     this.shadowRoot.querySelector('.progress-ring').style.display = on ? 'block' : 'none';
-    
     const ph = s(this.entities.phase); 
     const phT = (!on || ph === 'not_running') ? '' : (inv(ph) ? '-' : this.translate(ph));
     this.setText('.program-phase', phT); 
@@ -931,6 +930,26 @@ window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance C
     function generateYAML() {
         let wPrefix = document.getElementById("prefixWasher").value.trim() || "washer";
         let dPrefix = document.getElementById("prefixDryer").value.trim() || "dryer";
+        
+        let wDevName = wPrefix.includes('.') ? wPrefix.split('.')[1] : wPrefix;
+        let dDevName = dPrefix.includes('.') ? dPrefix.split('.')[1] : dPrefix;
+
+        // Update placeholders
+        document.getElementById('w_adv_power').placeholder = `switch.${wDevName}_power`;
+        document.getElementById('w_adv_door').placeholder = `binary_sensor.${wDevName}_door`;
+        document.getElementById('w_adv_water').placeholder = `sensor.${wPrefix}_water_consumption`;
+        document.getElementById('w_adv_water_forecast').placeholder = `sensor.${wPrefix}_water_forecast`;
+        document.getElementById('w_adv_energy').placeholder = `sensor.${wPrefix}_energy_consumption`;
+        document.getElementById('w_adv_energy_forecast').placeholder = `sensor.${wPrefix}_energy_forecast`;
+        document.getElementById('w_adv_td1').placeholder = `sensor.${wPrefix}_twindos_1_level`;
+        document.getElementById('w_adv_td2').placeholder = `sensor.${wPrefix}_twindos_2_level`;
+
+        document.getElementById('d_adv_power').placeholder = `switch.${dDevName}_power`;
+        document.getElementById('d_adv_door').placeholder = `binary_sensor.${dDevName}_door`;
+        document.getElementById('d_adv_drying').placeholder = `sensor.${dPrefix}_drying_step`;
+        document.getElementById('d_adv_problem').placeholder = `binary_sensor.${dDevName}_problem`;
+        document.getElementById('d_adv_energy').placeholder = `sensor.${dPrefix}_energy_consumption`;
+        document.getElementById('d_adv_energy_forecast').placeholder = `sensor.${dPrefix}_energy_forecast`;
 
         let wYaml = `type: custom:miele-appliance-card\nentity: sensor.${wPrefix}\nappliance_type: washer\nlang: ${currentLang}\nimage: /local/miele/washer.webp`;
         const wAdv = [
