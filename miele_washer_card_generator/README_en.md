@@ -9,7 +9,7 @@ An interactive custom card for Miele washing and drying machines (W1/T1 models) 
 ## 📸 Gallery
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/de27cd22-c60b-4963-af59-02b6c4b16654" alt="Общий вид" width="800">
+  <img src="https://github.com/user-attachments/assets/de27cd22-c60b-4963-af59-02b6c4b16654" alt="Overview" width="800">
 </p>
 
 <p align="center">
@@ -32,6 +32,12 @@ No more huge YAML sheets! A lightweight and smooth custom card that works out of
 * ⚡ **Zero Dependencies:** No more third-party integrations like `card-mod` or `button-card` are needed. All the magic is built into one isolated JS file!
 * 🌍 **Multi-language:** On-the-fly translation of washing and drying programs and phases (built-in support for En, Ru, De).
 
+## ⚙️ Custom Sensors (Advanced Settings)
+
+If your sensor names differ from those created by the official Miele integration (e.g., you renamed them or use an MQTT bridge), **the card will easily adapt to your setup**.
+
+In the HTML generator, click the **"⚙️ Advanced Settings"** button. A list of all expected sensors will appear. Simply type your custom `entity_id`s into the appropriate fields, and the generator will automatically add the override configurations to your final YAML code!
+
 ## 🚀 Installation and Usage
 
 1. **Download the files.** Download the plugin code `miele-appliance-card.js`, the HTML generator `miele_card_generator.html`, and the background-free images (`washer.webp` and/or `dryer.webp`) from this repository.
@@ -45,7 +51,8 @@ No more huge YAML sheets! A lightweight and smooth custom card that works out of
 3. **Generate the code.**
    * Open the `miele_card_generator.html` file in any browser on your computer.
    * Select your machine type (Washer or Dryer) and enter its entity prefix (for example, if the time sensor is named `sensor.washer_remaining_time`, your prefix is `washer`).
-   * Copy the generated short YAML code (only 4 lines!).
+   * *(Optional) Map any custom sensor names in the Advanced Settings.*
+   * Copy the generated short YAML code.
 
 4. **Add to dashboard.**
    * Clear your browser cache (`Cmd+Shift+R` or `Ctrl+F5`) so Home Assistant "sees" the new JS file.
