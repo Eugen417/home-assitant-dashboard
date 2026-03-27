@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miele Appliance Card Generator V3.1</title>
+    <title>Miele Appliance Card Generator V3.2</title>
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
@@ -259,9 +259,11 @@
                         <div><label>Power (switch)</label><input type="text" id="w_adv_power" onkeyup="generateYAML()"></div>
                         <div><label>Door (binary)</label><input type="text" id="w_adv_door" onkeyup="generateYAML()"></div>
                         <div><label>Water (sensor)</label><input type="text" id="w_adv_water" onkeyup="generateYAML()"></div>
+                        <div><label>Water Forecast (%)</label><input type="text" id="w_adv_water_forecast" onkeyup="generateYAML()"></div>
+                        <div><label>Energy (sensor)</label><input type="text" id="w_adv_energy" onkeyup="generateYAML()"></div>
+                        <div><label>Energy Forecast (%)</label><input type="text" id="w_adv_energy_forecast" onkeyup="generateYAML()"></div>
                         <div><label>TwinDos 1 Level</label><input type="text" id="w_adv_td1" onkeyup="generateYAML()"></div>
                         <div><label>TwinDos 2 Level</label><input type="text" id="w_adv_td2" onkeyup="generateYAML()"></div>
-                        <div><label>Energy (sensor)</label><input type="text" id="w_adv_energy" onkeyup="generateYAML()"></div>
                     </div>
 
                     <div class="adv-section-title" id="ui_adv_dryer_title">Сушильная машина:</div>
@@ -271,6 +273,7 @@
                         <div><label>Drying Step</label><input type="text" id="d_adv_drying" onkeyup="generateYAML()"></div>
                         <div><label>Problem (binary)</label><input type="text" id="d_adv_problem" onkeyup="generateYAML()"></div>
                         <div><label>Energy (sensor)</label><input type="text" id="d_adv_energy" onkeyup="generateYAML()"></div>
+                        <div><label>Energy Forecast (%)</label><input type="text" id="d_adv_energy_forecast" onkeyup="generateYAML()"></div>
                     </div>
                 </div>
             </div>
@@ -279,7 +282,7 @@
         <div class="right-col">
             <div class="preview-box">
                 <h3 id="ui_preview_title">Статичное превью фона:</h3>
-                <select id="previewType" onchange="updatePreviewImg()" style="margin-bottom: 15px;">
+                <select id="previewType" onchange="updatePreviewImg()" style="margin-bottom: 15px; width: 100%; padding: 8px; border-radius: 4px;">
                     <option value="washer" id="ui_preview_opt_washer">Превью фона: Стиралка</option>
                     <option value="dryer" id="ui_preview_opt_dryer">Превью фона: Сушилка</option>
                 </select>
@@ -313,7 +316,7 @@
             <label id="ui_js_label">Блок 3: Код плагина (miele-appliance-card.js)</label>
             <button class="copy-btn" id="ui_btn_copy_js" onclick="copyToClipboard('jsOutput', this)">📋 Copy JS</button>
         </div>
-        <textarea id="jsOutput" rows="15" readonly></textarea>
+        <textarea id="jsOutput" rows="20" readonly></textarea>
     </div>
     
     <div class="footer" id="ui_footer">
@@ -326,6 +329,7 @@
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._showForecast = false;
     this.translations = {
       'ru': {
         // Phases & States
@@ -419,6 +423,31 @@
     };
   }
 
+  connectedCallback() {
+    if (!this._toggleInterval) {
+      this._toggleInterval = setInterval(() => {
+        this._showForecast = !this._showForecast;
+        if (this._hass) this.updateData();
+      }, 10000);
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._toggleInterval) {
+      clearInterval(this._toggleInterval);
+      this._toggleInterval = null;
+    }
+  }
+
+  getColor(pct) {
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    // Green (0%) -> Yellow (50%) -> Red (100%)
+    let r = pct < 50 ? Math.floor(255 * (pct / 50)) : 255;
+    let g = pct > 50 ? Math.floor(255 * ((100 - pct) / 50)) : 255;
+    return \`rgb(\${r},\${g},0)\`;
+  }
+
   setConfig(config) {
     if (!config.entity) throw new Error('Specify entity');
     this.config = { 
@@ -441,7 +470,9 @@
       stop: this.config.stop_entity || \`button.\${devName}_ostanovit\`,
       door: this.config.door_entity || \`binary_sensor.\${devName}_door\`,
       energy: this.config.energy_entity || \`\${base}_energy_consumption\`,
+      energy_forecast: this.config.energy_forecast_entity || \`\${base}_energy_forecast\`,
       water: this.config.water_entity || \`\${base}_water_consumption\`,
+      water_forecast: this.config.water_forecast_entity || \`\${base}_water_forecast\`,
       td1: this.config.td1_entity || \`\${base}_twindos_1_level\`,
       td2: this.config.td2_entity || \`\${base}_twindos_2_level\`,
       drying_step: this.config.drying_step_entity || \`\${base}_drying_step\`,
@@ -488,10 +519,13 @@
         .btn-startstop { top: 5.5%; left: 61%; --mdc-icon-size: 1.3em; }
         .btn-power { top: 5.5%; left: 81.5%; --mdc-icon-size: 1.5em; }
         .door-lock { top: 42%; left: 18%; --mdc-icon-size: 1.6em; }
-        .water-icon { top: 87%; left: 20%; color: #00bfff; --mdc-icon-size: 1.7em; }
-        .water-val { top: 91%; left: 20%; color: #fff; font-size: clamp(10px, 3vw, 15px); }
-        .energy-icon { top: 20%; left: 90%; color: #ff8c00; --mdc-icon-size: 1.7em; }
-        .energy-val { top: 24%; left: 90%; color: #fff; font-size: clamp(10px, 3vw, 15px); }
+        
+        .water-icon { top: 87%; left: 20%; --mdc-icon-size: 1.4em; transition: color 0.5s ease; }
+        .water-val { top: 91%; left: 20%; font-size: clamp(10px, 3vw, 15px); transition: color 0.5s ease; }
+        
+        .energy-icon { top: 20%; left: 90%; --mdc-icon-size: 1.4em; transition: color 0.5s ease; }
+        .energy-val { top: 24%; left: 90%; font-size: clamp(10px, 3vw, 15px); transition: color 0.5s ease; }
+        
         .progress-ring { position: absolute; top: 43%; left: 50%; width: 55%; height: 55%; transform: translate(-50%, -50%) rotate(-90deg); pointer-events: none; }
         .ring-bg { fill: none; stroke: rgba(150, 150, 150, 0.4); stroke-width: 6; }
         .ring-fg { fill: none; stroke: #ff8c00; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
@@ -499,12 +533,12 @@
         .twindos { position: absolute; height: 14%; width: 20%; border-radius: 6px; overflow: hidden; background: rgba(140, 140, 140, 0.4); border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
         .twindos-1 { top: 79%; left: 47%; }
         .twindos-2 { top: 79%; left: 73%; }
-        .twindos-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top,#00bfff,#007acc); transition: height 0.5s ease; z-index: 1; }
-        .twindos-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 2; padding: 4px 0; box-sizing: border-box; }
+        .twindos-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0, 191, 255, 0.8), rgba(0, 191, 255, 0.4)); transition: height 0.5s ease; z-index: 1; }
+        .twindos-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 2; padding: 4px 0; box-sizing: border-box;}
         .twindos-label { color: white; font-size: clamp(6px, 1.5vw, 12px); font-weight: bold; }
         .twindos-val { color: white; font-size: clamp(10px, 2.5vw, 16px); font-weight: bold; text-shadow: 1px 1px 3px black; }
-        .filter-alert { display: none; position: absolute; top: 84.5%; left: 27.5%; width: 41%; height: 15%; transform: translate(-50%,-50%); background: rgba(255,0,0,0.7); border-radius: 8px; border: 2px solid red; color: white; font-weight: bold; font-size: clamp(10px, 2vw, 16px); align-items: center; justify-content: center; text-align: center; text-shadow: 1px 1px 3px black; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: pulse 2s infinite; z-index: 5; cursor: pointer; }
-        @keyframes pulse { 0% { box-shadow: 0 0 5px red; } 50% { box-shadow: 0 0 20px red; } 100% { box-shadow: 0 0 5px red; } }
+        .filter-alert { display: none; position: absolute; top: 84.5%; left: 27.5%; width: 41%; height: 15%; transform: translate(-50%, -50%); background: rgba(255, 0, 0, 0.7); border-radius: 8px; border: 2px solid red; color: white; font-weight: bold; font-size: clamp(10px, 2vw, 16px); display: flex; align-items: center; justify-content: center; text-align: center; text-shadow: 1px 1px 3px black; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: pulse 2s infinite; z-index: 5; cursor: pointer; }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } 50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); } 100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); } }
       </style>
       <ha-card>
         <div class="card-container">
@@ -558,9 +592,19 @@
     this.shadowRoot.querySelector('.drum-info').addEventListener('click', () => this.openMoreInfo(this.entities.base));
     this.shadowRoot.querySelector('.remaining-time').addEventListener('click', () => this.openMoreInfo(this.entities.remaining));
     this.shadowRoot.querySelector('.door-lock').addEventListener('click', () => this.openMoreInfo(this.entities.door));
-    this.shadowRoot.querySelector('.water-container').addEventListener('click', () => this.openMoreInfo(this.entities.water));
-    this.shadowRoot.querySelector('.energy-val').addEventListener('click', () => this.openMoreInfo(this.entities.energy));
-    this.shadowRoot.querySelector('.energy-icon').addEventListener('click', () => this.openMoreInfo(this.entities.energy));
+    
+    this.shadowRoot.querySelector('.water-container').addEventListener('click', () => {
+        const ent = (this._showForecast && this._hass.states[this.entities.water_forecast]) ? this.entities.water_forecast : this.entities.water;
+        this.openMoreInfo(ent);
+    });
+    
+    const energyClick = () => {
+        const ent = (this._showForecast && this._hass.states[this.entities.energy_forecast]) ? this.entities.energy_forecast : this.entities.energy;
+        this.openMoreInfo(ent);
+    };
+    this.shadowRoot.querySelector('.energy-val').addEventListener('click', energyClick);
+    this.shadowRoot.querySelector('.energy-icon').addEventListener('click', energyClick);
+    
     this.shadowRoot.querySelector('.twindos-1').addEventListener('click', () => this.openMoreInfo(this.entities.td1));
     this.shadowRoot.querySelector('.twindos-2').addEventListener('click', () => this.openMoreInfo(this.entities.td2));
     this.shadowRoot.querySelector('.filter-alert').addEventListener('click', () => { 
@@ -573,6 +617,7 @@
     const s = (e) => this._hass.states[e]?.state; 
     const inv = (v) => v === undefined || v === null || v === '' || v === 'unknown' || v === 'unavailable';
     const main = s(this.entities.base); 
+    
     if (main === undefined) {
       this.setText('.program-name', 'Сенсор не найден');
       this.shadowRoot.querySelector('.program-name').style.display = 'block';
@@ -589,18 +634,34 @@
     const on = pwr === 'on' || (main && main !== 'off' && !inv(main));
     
     this.shadowRoot.querySelector('.progress-ring').style.display = on ? 'block' : 'none';
+    
     const ph = s(this.entities.phase); 
     const phT = (!on || ph === 'not_running') ? '' : (inv(ph) ? '-' : this.translate(ph));
     this.setText('.program-phase', phT); 
+    this.shadowRoot.querySelector('.program-phase').style.display = phT ? 'block' : 'none';
     
-    const sp = s(this.entities.speed); 
-    this.setText('.spin-speed', on ? (inv(sp) ? '-' : \`\${sp} rpm\`) : '');
+    if (isD) {
+      this.shadowRoot.querySelector('.spin-speed').style.display = 'none';
+    } else {
+      const sp = s(this.entities.speed); 
+      const spT = on ? (inv(sp) ? '-' : \`\${sp} rpm\`) : '';
+      this.setText('.spin-speed', spT); 
+      this.shadowRoot.querySelector('.spin-speed').style.display = spT ? 'block' : 'none';
+    }
     
     const pr = s(this.entities.program); 
-    this.setText('.program-name', on ? (inv(pr) ? '-' : this.translate(pr)) : '');
+    const prT = on ? (inv(pr) ? '-' : this.translate(pr)) : '';
+    this.setText('.program-name', prT); 
+    this.shadowRoot.querySelector('.program-name').style.display = prT ? 'block' : 'none';
     
-    const ds = s(this.entities.drying_step); 
-    this.setText('.drying-step', (on && this._hass.states[this.entities.drying_step]) ? (inv(ds) ? '-' : this.translate(ds)) : '');
+    if (isD) {
+      const ds = s(this.entities.drying_step); 
+      const dsT = (on && this._hass.states[this.entities.drying_step]) ? (inv(ds) ? '-' : this.translate(ds)) : '';
+      this.setText('.drying-step', dsT); 
+      this.shadowRoot.querySelector('.drying-step').style.display = dsT ? 'block' : 'none';
+    } else {
+      this.shadowRoot.querySelector('.drying-step').style.display = 'none';
+    }
     
     const rem = s(this.entities.remaining); 
     const lang = this.config.lang || 'ru';
@@ -609,20 +670,37 @@
     if (isD) {
       this.shadowRoot.querySelector('.water-container').style.display = 'none'; 
       this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
-      // Оставили только problem для срабатывания предупреждения, убрали notification_active
       const prob = s(this.entities.problem) === 'on';
       this.shadowRoot.querySelector('.filter-alert').style.display = (on && prob) ? 'flex' : 'none';
       this.shadowRoot.getElementById('fltr-txt').innerText = this.translations[lang]['clean_filter'];
     } else {
       this.shadowRoot.querySelector('.water-container').style.display = 'block'; 
       const wE = this._hass.states[this.entities.water]; 
-      if (wE) { 
+      const wF = this._hass.states[this.entities.water_forecast];
+      
+      if (wE || wF) { 
         this.shadowRoot.querySelector('.water-icon').style.display = 'block'; 
-        this.setText('.water-val', inv(wE.state) ? '-' : \`\${wE.state} L\`); 
+        
+        if (this._showForecast && wF && !inv(wF.state)) {
+            let val = parseFloat(wF.state) || 0;
+            this.setText('.water-val', \`\${val}%\`);
+            let color = this.getColor(val);
+            this.shadowRoot.querySelector('.water-val').style.color = color;
+            this.shadowRoot.querySelector('.water-icon').style.color = color;
+        } 
+        else if (wE) {
+            this.setText('.water-val', inv(wE.state) ? '-' : \`\${wE.state} L\`); 
+            this.shadowRoot.querySelector('.water-val').style.color = '#fff';
+            this.shadowRoot.querySelector('.water-icon').style.color = '#00bfff';
+        } else {
+            this.setText('.water-val', '');
+            this.shadowRoot.querySelector('.water-icon').style.display = 'none';
+        }
       } else {
         this.shadowRoot.querySelector('.water-icon').style.display = 'none';
         this.setText('.water-val', '');
       }
+      
       const t1 = s(this.entities.td1); 
       if (!this._hass.states[this.entities.td1]) {
         this.shadowRoot.querySelector('.twindos-container').style.display = 'none';
@@ -638,24 +716,43 @@
       }
       this.shadowRoot.querySelector('.filter-alert').style.display = 'none';
     }
+    
     const eE = this._hass.states[this.entities.energy]; 
-    if (eE) { 
+    const eF = this._hass.states[this.entities.energy_forecast];
+    
+    if (eE || eF) { 
         this.shadowRoot.querySelector('.energy-icon').style.display = 'block'; 
-        // Автоматически берем единицу измерения (чтобы % работал так же, как kWh)
-        const uom = eE.attributes?.unit_of_measurement || 'kWh';
-        this.setText('.energy-val', inv(eE.state) ? '-' : \`\${eE.state} \${uom}\`); 
+        
+        if (this._showForecast && eF && !inv(eF.state)) {
+            let val = parseFloat(eF.state) || 0;
+            this.setText('.energy-val', \`\${val}%\`);
+            let color = this.getColor(val);
+            this.shadowRoot.querySelector('.energy-val').style.color = color;
+            this.shadowRoot.querySelector('.energy-icon').style.color = color;
+        } else if (eE) {
+            const uom = eE.attributes?.unit_of_measurement || 'kWh';
+            this.setText('.energy-val', inv(eE.state) ? '-' : \`\${eE.state} \${uom}\`); 
+            this.shadowRoot.querySelector('.energy-val').style.color = '#fff';
+            this.shadowRoot.querySelector('.energy-icon').style.color = '#ff8c00';
+        } else {
+            this.setText('.energy-val', '');
+            this.shadowRoot.querySelector('.energy-icon').style.display = 'none';
+        }
     } else {
         this.shadowRoot.querySelector('.energy-icon').style.display = 'none';
         this.setText('.energy-val', '');
     }
+    
     const door = s(this.entities.door); 
     const lock = this.shadowRoot.querySelector('.door-lock'); 
     if (lock) { 
         lock.setAttribute('icon', door === 'on' ? 'mdi:lock-open-variant' : 'mdi:lock'); 
         lock.style.color = door === 'on' ? '#ccc' : '#0f0'; 
     }
+    
     const pI = this.shadowRoot.querySelector('.btn-power'); 
     if (pI) pI.style.color = on ? '#0f0' : '#ff8c00';
+    
     const plI = this.shadowRoot.querySelector('.btn-startstop'); 
     if (plI) { 
         plI.style.display = on ? 'block' : 'none'; 
@@ -667,6 +764,7 @@
             plI.style.color = '#0f0'; 
         } 
     }
+    
     if (on) { 
         const el = parseFloat(s(this.entities.elapsed)) || 0; 
         const r = parseFloat(s(this.entities.remaining)) || 0; 
@@ -679,18 +777,23 @@
         } 
     }
   }
+
   setText(s, t) { const e = this.shadowRoot.querySelector(s); if (e) e.innerText = t; }
+
   togglePower() { 
       const s = this._hass.states[this.entities.power]?.state; 
       if (s) this._hass.callService('switch', s === 'on' ? 'turn_off' : 'turn_on', { entity_id: this.entities.power }); 
   }
+
   toggleStartStop() { 
       const s = this._hass.states[this.entities.base]?.state; 
       const b = s === 'in_use' ? this.entities.stop : this.entities.start; 
       if (this._hass.states[b]) this._hass.callService('button', 'press', { entity_id: b }); 
   }
+
   getCardSize() { return 4; }
 }
+
 customElements.define('miele-appliance-card', MieleApplianceCard);
 window.customCards = window.customCards || [];
 window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance Card", preview: false, description: "Мультиязычная карточка для техники Miele" });`;
@@ -834,9 +937,11 @@ window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance C
             { id: 'w_adv_power', k: 'power_entity' },
             { id: 'w_adv_door', k: 'door_entity' },
             { id: 'w_adv_water', k: 'water_entity' },
+            { id: 'w_adv_water_forecast', k: 'water_forecast_entity' },
+            { id: 'w_adv_energy', k: 'energy_entity' },
+            { id: 'w_adv_energy_forecast', k: 'energy_forecast_entity' },
             { id: 'w_adv_td1', k: 'td1_entity' },
-            { id: 'w_adv_td2', k: 'td2_entity' },
-            { id: 'w_adv_energy', k: 'energy_entity' }
+            { id: 'w_adv_td2', k: 'td2_entity' }
         ];
         wAdv.forEach(item => {
             let val = document.getElementById(item.id).value.trim();
@@ -850,7 +955,8 @@ window.customCards.push({ type: "miele-appliance-card", name: "Miele Appliance C
             { id: 'd_adv_door', k: 'door_entity' },
             { id: 'd_adv_drying', k: 'drying_step_entity' },
             { id: 'd_adv_problem', k: 'problem_entity' },
-            { id: 'd_adv_energy', k: 'energy_entity' }
+            { id: 'd_adv_energy', k: 'energy_entity' },
+            { id: 'd_adv_energy_forecast', k: 'energy_forecast_entity' }
         ];
         dAdv.forEach(item => {
             let val = document.getElementById(item.id).value.trim();
